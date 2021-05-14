@@ -107,6 +107,7 @@ public class GameEngine extends GameCore {
 		g.drawString("Lives: " + (numLives), 500.0f, 20.0f);
 		g.setColor(Color.WHITE);
 		g.drawString("Home: " + mapLoader.currentMap, 700.0f, 20.0f);
+		g.drawString("frames: " + frameCount,500.f, 40.f);
 
 	}
 

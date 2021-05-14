@@ -13,13 +13,23 @@ public abstract class GameCore {
 
 	protected static final int FONT_SIZE = 18;
 
-	private static final DisplayMode POSSIBLE_MODES[] = { new DisplayMode(800, 600, 32, 0),
-			new DisplayMode(800, 600, 16, 0), new DisplayMode(800, 600, 24, 0), new DisplayMode(640, 480, 16, 0),
-			new DisplayMode(640, 480, 32, 0), new DisplayMode(640, 480, 24, 0), new DisplayMode(1024, 768, 16, 0),
-			new DisplayMode(1024, 768, 32, 0), new DisplayMode(1024, 768, 24, 0), };
+	private static final DisplayMode POSSIBLE_MODES[] = {
+		new DisplayMode(800, 600, 32, 0),
+		new DisplayMode(800, 600, 16, 0),
+		new DisplayMode(800, 600, 24, 0),
+		new DisplayMode(640, 480, 16, 0),
+		new DisplayMode(640, 480, 32, 0),
+		new DisplayMode(640, 480, 24, 0),
+		new DisplayMode(1024, 768, 16, 0),
+		new DisplayMode(1024, 768, 32, 0),
+		new DisplayMode(1024, 768, 24, 0)
+	};
 
 	private boolean isRunning;
 	protected ScreenManager screen;
+
+	//for debug purpose only
+	protected int frameCount = 0;
 
 	/**
 	 * Signals the game loop that it's time to quit
@@ -83,12 +93,15 @@ public abstract class GameCore {
 		return new ImageIcon(fileName).getImage();
 	}
 
+
 	/**
 	 * Runs through the game loop until stop() is called.
 	 */
 	public void gameLoop() {
 		long startTime = System.currentTimeMillis();
 		long currTime = startTime;
+		long secondCountdown = 1000;
+		int currentFrameCount = 0;
 
 		while (isRunning) {
 			long elapsedTime = System.currentTimeMillis() - currTime;
@@ -102,6 +115,14 @@ public abstract class GameCore {
 			draw(g);
 			g.dispose();
 			screen.update();
+
+			secondCountdown -= elapsedTime;
+			currentFrameCount++;
+			if (secondCountdown <= 0){
+				secondCountdown = 1000;
+				frameCount = currentFrameCount;
+				currentFrameCount = 0;
+			}
 
 			// don't take a nap! run as fast as possible
 			/*
