@@ -11,6 +11,10 @@ import com.TETOSOFT.graphics.ScreenManager;
  */
 public abstract class GameCore {
 
+	public enum GameState{
+		MENU,
+		GAME_RUNNING
+	};
 	protected static final int FONT_SIZE = 18;
 
 	private static final DisplayMode POSSIBLE_MODES[] = {
@@ -27,6 +31,7 @@ public abstract class GameCore {
 
 	private boolean isRunning;
 	protected ScreenManager screen;
+	protected GameState state;
 
 	//for debug purpose only
 	protected int frameCount = 0;
@@ -106,22 +111,30 @@ public abstract class GameCore {
 		while (isRunning) {
 			long elapsedTime = System.currentTimeMillis() - currTime;
 			currTime += elapsedTime;
-
-			// update
-			update(elapsedTime);
-
-			// draw the screen
-			Graphics2D g = screen.getGraphics();
-			draw(g);
-			g.dispose();
-			screen.update();
-
-			secondCountdown -= elapsedTime;
-			currentFrameCount++;
-			if (secondCountdown <= 0){
-				secondCountdown = 1000;
-				frameCount = currentFrameCount;
-				currentFrameCount = 0;
+			switch (state)
+			{
+				case GAME_RUNNING:
+					{
+						// update
+						update(elapsedTime);
+						// draw the screen
+						Graphics2D g = screen.getGraphics();
+						drawGame(g);
+						g.dispose();
+						screen.update();
+						//update the frame couting logic
+						secondCountdown -= elapsedTime;
+						currentFrameCount++;
+						if (secondCountdown <= 0){
+							secondCountdown = 1000;
+							frameCount = currentFrameCount;
+							currentFrameCount = 0;
+						}
+					} break;
+				case MENU:
+					{
+						//DO menu stuff here
+					}
 			}
 
 			// don't take a nap! run as fast as possible
@@ -142,5 +155,6 @@ public abstract class GameCore {
 	/**
 	 * Draws to the screen. Subclasses must override this method.
 	 */
-	public abstract void draw(Graphics2D g);
+	public abstract void drawMenu(Graphics2D g);
+	public abstract void drawGame(Graphics2D g);
 }

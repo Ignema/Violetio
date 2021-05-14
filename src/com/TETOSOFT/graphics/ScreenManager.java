@@ -2,7 +2,6 @@ package com.TETOSOFT.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 
@@ -12,10 +11,6 @@ public class ScreenManager {
 	public ScreenManager() {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
-	}
-
-	public DisplayMode[] getCompatibleDisplayModes() {
-		return device.getDisplayModes();
 	}
 
 	public DisplayMode findFirstCompatibleMode(DisplayMode modes[]) {
@@ -28,10 +23,6 @@ public class ScreenManager {
 			}
 		}
 		return null;
-	}
-
-	public DisplayMode getCurrentDisplayMode() {
-		return device.getDisplayMode();
 	}
 
 	public boolean displayModesMatch(DisplayMode mode1, DisplayMode mode2) {
@@ -136,14 +127,5 @@ public class ScreenManager {
 			window.dispose();
 		}
 		device.setFullScreenWindow(null);
-	}
-
-	public BufferedImage createCompatibleImage(int w, int h, int transparancy) {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			GraphicsConfiguration gc = window.getGraphicsConfiguration();
-			return gc.createCompatibleImage(w, h, transparancy);
-		}
-		return null;
 	}
 }

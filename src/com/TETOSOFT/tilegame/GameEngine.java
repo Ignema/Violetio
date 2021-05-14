@@ -48,6 +48,8 @@ public class GameEngine extends GameCore {
 
 		// load first map
 		map = mapLoader.loadNextMap();
+
+		state = GameState.GAME_RUNNING;
 	}
 
 	/**
@@ -96,7 +98,7 @@ public class GameEngine extends GameCore {
 
 	}
 
-	public void draw(Graphics2D g) {
+	public void drawGame(Graphics2D g) {
 
 		drawer.draw(g, map, screen.getWidth(), screen.getHeight());
 		g.setColor(Color.WHITE);
@@ -109,6 +111,10 @@ public class GameEngine extends GameCore {
 		g.drawString("Home: " + mapLoader.currentMap, 700.0f, 20.0f);
 		g.drawString("frames: " + frameCount,500.f, 40.f);
 
+	}
+
+	public void drawMenu(Graphics2D g){
+		//TODO: draw menu stuff here
 	}
 
 	/**
