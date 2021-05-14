@@ -4,97 +4,69 @@ import java.awt.Image;
 
 public class Sprite {
 
-    protected Animation anim;
-    
-    private float x;
-    private float y;
-    
-    private float dx;
-    private float dy;
+	protected Animation anim;
 
-    
-    public Sprite(Animation anim) 
-    {
-        this.anim = anim;
-    }
+	private float x;
+	private float y;
 
-    
-    
-    public void update(long elapsedTime) 
-    {
-        x += dx * elapsedTime;
-        y += dy * elapsedTime;
-        anim.update(elapsedTime);
-    }
+	private float dx;
+	private float dy;
 
-    
-    public float getX() 
-    {
-        return x;
-    }
+	public Sprite(Animation anim) {
+		this.anim = anim;
+	}
 
-    
-    public float getY() {
-        return y;
-    }
+	public void update(long elapsedTime) {
+		x += dx * elapsedTime;
+		y += dy * elapsedTime;
+		anim.update(elapsedTime);
+	}
 
-    
-    public void setX(float x) 
-    {
-        this.x = x;
-    }
+	public float getX() {
+		return x;
+	}
 
-   
-    public void setY(float y)
-    {
-        this.y = y;
-    }
+	public float getY() {
+		return y;
+	}
 
-   
-    public int getWidth() 
-    {
-        return anim.getImage().getWidth(null);
-    }
+	public void setX(float x) {
+		this.x = x;
+	}
 
-    
-    public int getHeight() 
-    {
-        return anim.getImage().getHeight(null);
-    }
+	public void setY(float y) {
+		this.y = y;
+	}
 
-    
-    public float getVelocityX() 
-    {
-        return dx;
-    }
+	public int getWidth() {
+		return anim.getImage().getWidth(null);
+	}
 
-   
-    public float getVelocityY()
-    {
-        return dy;
-    }
+	public int getHeight() {
+		return anim.getImage().getHeight(null);
+	}
 
-    
-    public void setVelocityX(float dx) 
-    {
-        this.dx = dx;
-    }
+	public float getVelocityX() {
+		return dx;
+	}
 
-    
-    public void setVelocityY(float dy) 
-    {
-        this.dy = dy;
-    }
+	public float getVelocityY() {
+		return dy;
+	}
 
-    
-    public Image getImage() 
-    {
-        return anim.getImage();
-    }
+	public void setVelocityX(float dx) {
+		this.dx = dx;
+	}
 
-    
-    public Object clone() 
-    {
-        return new Sprite(anim);
-    }
+	public void setVelocityY(float dy) {
+		this.dy = dy;
+	}
+
+	public Image getImage() {
+		return anim.getImage();
+	}
+
+	public Object clone() {
+		return new Sprite(anim);
+	}
 }
