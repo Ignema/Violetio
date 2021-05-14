@@ -26,10 +26,6 @@ public class GameEngine extends GameCore {
 	private InputManager inputManager;
 	private TileMapDrawer drawer;
 
-	private GameAction moveLeft;
-	private GameAction moveRight;
-	private GameAction jump;
-	private GameAction exit;
 	private int collectedStars = 0;
 	private int numLives = 6;
 
@@ -61,41 +57,31 @@ public class GameEngine extends GameCore {
 	}
 
 	private void initInput() {
-		moveLeft = new GameAction("moveLeft");
-		moveRight = new GameAction("moveRight");
-		jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
-		exit = new GameAction("exit", GameAction.DETECT_INITAL_PRESS_ONLY);
-
 		inputManager = new InputManager(screen.getFullScreenWindow());
 		inputManager.setCursor(InputManager.INVISIBLE_CURSOR);
-
-		inputManager.mapToKey(moveLeft, KeyEvent.VK_LEFT);
-		inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
-		inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
-		inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
 	}
 
-	private void checkInput(long elapsedTime) {
-
-		if (exit.isPressed()) {
+	private void checkInput() {
+		boolean[] keys = inputManager.keyboardState;
+		if (keys[KeyEvent.VK_ESCAPE]) {
 			stop();
 		}
 
 		Player player = (Player) map.getPlayer();
+		//TODO(Mouad): do we really need to check if the player is alive ?
 		if (player.isAlive()) {
 			float velocityX = 0;
-			if (moveLeft.isPressed()) {
+			if (keys[KeyEvent.VK_LEFT]){
 				velocityX -= player.getMaxSpeed();
 			}
-			if (moveRight.isPressed()) {
+			if (keys[KeyEvent.VK_RIGHT]){
 				velocityX += player.getMaxSpeed();
 			}
-			if (jump.isPressed()) {
+			if (keys[KeyEvent.VK_SPACE]){
 				player.jump(false);
 			}
 			player.setVelocityX(velocityX);
 		}
-
 	}
 
 	public void drawGame(Graphics2D g) {
@@ -218,7 +204,7 @@ public class GameEngine extends GameCore {
 		}
 
 		// get keyboard/mouse input
-		checkInput(elapsedTime);
+		checkInput();
 
 		// update player
 		updateCreature(player, elapsedTime);

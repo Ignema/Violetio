@@ -115,6 +115,7 @@ public abstract class GameCore {
 			{
 				case GAME_RUNNING:
 					{
+						//TODO(Mouad): handle inputs
 						// update
 						update(elapsedTime);
 						// draw the screen
