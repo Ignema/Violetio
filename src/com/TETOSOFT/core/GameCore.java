@@ -1,19 +1,21 @@
-package com.TETOSOFT.test;
+package com.TETOSOFT.core;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
 
 import com.TETOSOFT.graphics.ScreenManager;
+import com.TETOSOFT.resource.ResourceManager;
 
 /**
  * Simple abstract class used for testing. Subclasses should implement the
  * draw() method.
  */
 public abstract class GameCore {
-
 	public enum GameState{
 		MENU,
-		GAME_RUNNING
+		GAME_RUNNING,
+		PLAYER_DYING,
+		GAME_OVER
 	};
 	protected static final int FONT_SIZE = 18;
 
@@ -116,7 +118,6 @@ public abstract class GameCore {
 				case GAME_RUNNING:
 					{
 						//TODO(Mouad): handle inputs
-						// update
 						update(elapsedTime);
 						// draw the screen
 						Graphics2D g = screen.getGraphics();
@@ -131,6 +132,29 @@ public abstract class GameCore {
 							frameCount = currentFrameCount;
 							currentFrameCount = 0;
 						}
+					} break;
+				case PLAYER_DYING:
+					{
+						updateDying(elapsedTime);
+						Graphics2D g = screen.getGraphics();
+						drawGame(g);
+						g.dispose();
+						screen.update();
+						//update the frame couting logic
+						secondCountdown -= elapsedTime;
+						currentFrameCount++;
+						if (secondCountdown <= 0){
+							secondCountdown = 1000;
+							frameCount = currentFrameCount;
+							currentFrameCount = 0;
+						}
+					} break;
+				case GAME_OVER :
+					{
+						Graphics2D g = screen.getGraphics();
+						drawGameOverMenu(g);
+						g.dispose();
+						screen.update();
 					} break;
 				case MENU:
 					{
@@ -147,15 +171,22 @@ public abstract class GameCore {
 
 	/**
 	 * Updates the state of the game/animation based on the amount of elapsed time
-	 * that has passed.
+	 * that has passed, this function will be called only when the player is alive
 	 */
 	public void update(long elapsedTime) {
 		// do nothing
 	}
 
 	/**
+	 * this function will do the update logic when the player is dying
+	 * */
+	public void updateDying(long elapsedTime){
+		// do nothing 
+	}
+
+	/**
 	 * Draws to the screen. Subclasses must override this method.
 	 */
-	public abstract void drawMenu(Graphics2D g);
 	public abstract void drawGame(Graphics2D g);
+	public abstract void drawGameOverMenu(Graphics2D g);
 }

@@ -2,12 +2,13 @@ package com.TETOSOFT.tilegame;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 
-import com.TETOSOFT.graphics.*;
+import com.TETOSOFT.render.*;
+import com.TETOSOFT.resource.*;
 import com.TETOSOFT.input.*;
-import com.TETOSOFT.test.GameCore;
-import com.TETOSOFT.tilegame.sprites.*;
+import com.TETOSOFT.core.GameCore;
+import com.TETOSOFT.tilegame.objects.*;
+
 
 /**
  * GameManager manages all parts of the game.
@@ -20,31 +21,21 @@ public class GameEngine extends GameCore {
 
 	public static final float GRAVITY = 0.002f;
 
-	private Point pointCache = new Point();
 	private TileMap map;
-	private MapLoader mapLoader;
 	private InputManager inputManager;
-	private TileMapDrawer drawer;
 
 	private int collectedStars = 0;
 	private int numLives = 6;
 
 	public void init() {
 		super.init();
-
 		// set up input manager
 		initInput();
-
-		// start resource manager
-		mapLoader = new MapLoader(screen.getFullScreenWindow().getGraphicsConfiguration());
-
-		// load resources
-		drawer = new TileMapDrawer();
-		drawer.setBackground(mapLoader.loadImage("background.jpg"));
-
+		ResourceManager.gc = screen.getFullScreenWindow().getGraphicsConfiguration();
+		ResourceManager.InitImages();
+		Renderer.background = ResourceManager.LoadImage("background.jpg");
 		// load first map
-		map = mapLoader.loadNextMap();
-
+		map = ResourceManager.LoadMap();
 		state = GameState.GAME_RUNNING;
 	}
 
@@ -53,7 +44,6 @@ public class GameEngine extends GameCore {
 	 */
 	public void stop() {
 		super.stop();
-
 	}
 
 	private void initInput() {
@@ -64,283 +54,384 @@ public class GameEngine extends GameCore {
 	private void checkInput() {
 		boolean[] keys = inputManager.keyboardState;
 		if (keys[KeyEvent.VK_ESCAPE]) {
+			//TODO: maybe display a menu instead of quiting
 			stop();
 		}
-
-		Player player = (Player) map.getPlayer();
-		//TODO(Mouad): do we really need to check if the player is alive ?
-		if (player.isAlive()) {
-			float velocityX = 0;
-			if (keys[KeyEvent.VK_LEFT]){
-				velocityX -= player.getMaxSpeed();
+		Player player = map.player;
+		float velocityX = 0.f;
+		if (keys[KeyEvent.VK_LEFT]){
+			velocityX -= player.max_dx;
+			//update the
+			if (Player.PlayerAnimation.currentFrames != Player.PlayerAnimation.movingLeftFrames){
+				player.moveLeft();
 			}
-			if (keys[KeyEvent.VK_RIGHT]){
-				velocityX += player.getMaxSpeed();
-			}
-			if (keys[KeyEvent.VK_SPACE]){
-				player.jump(false);
-			}
-			player.setVelocityX(velocityX);
 		}
+		if (keys[KeyEvent.VK_RIGHT]){
+			velocityX += player.max_dx;
+			if (Player.PlayerAnimation.currentFrames != Player.PlayerAnimation.movingRightFrames){
+				player.moveRight();
+			}
+		}
+		if (keys[KeyEvent.VK_SPACE]){
+			player.jump();
+		}
+		player.dx = velocityX;
+	}
+
+
+	public void drawGameOverMenu(Graphics2D g){
+		Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
+		Renderer.renderGameOverMenu(g, screen.getWidth(), screen.getHeight());
 	}
 
 	public void drawGame(Graphics2D g) {
-
-		drawer.draw(g, map, screen.getWidth(), screen.getHeight());
-		g.setColor(Color.WHITE);
-		g.drawString("Press ESC for EXIT.", 10.0f, 20.0f);
-		g.setColor(Color.GREEN);
-		g.drawString("Coins: " + collectedStars, 300.0f, 20.0f);
-		g.setColor(Color.YELLOW);
-		g.drawString("Lives: " + (numLives), 500.0f, 20.0f);
-		g.setColor(Color.WHITE);
-		g.drawString("Home: " + mapLoader.currentMap, 700.0f, 20.0f);
-		g.drawString("frames: " + frameCount,500.f, 40.f);
-
+		Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
+		Renderer.renderHUD(g, collectedStars, numLives, frameCount);
 	}
 
-	public void drawMenu(Graphics2D g){
-		//TODO: draw menu stuff here
-	}
-
-	/**
-	 * Gets the current map.
-	 */
-	public TileMap getMap() {
-		return map;
-	}
-
-	/**
-	 * Gets the tile that a Sprites collides with. Only the Sprite's X or Y should
-	 * be changed, not both. Returns null if no collision is detected.
-	 */
-	public Point getTileCollision(Sprite sprite, float newX, float newY) {
-		float fromX = Math.min(sprite.getX(), newX);
-		float fromY = Math.min(sprite.getY(), newY);
-		float toX = Math.max(sprite.getX(), newX);
-		float toY = Math.max(sprite.getY(), newY);
-
+	Point CheckTileCollision(Box box, float newX, float newY){
+		float fromX = Math.min(box.x, newX);
+		float fromY = Math.min(box.y, newY);
+		float toX = Math.max(box.x, newX);
+		float toY = Math.max(box.y, newY);
 		// get the tile locations
-		int fromTileX = TileMapDrawer.pixelsToTiles(fromX);
-		int fromTileY = TileMapDrawer.pixelsToTiles(fromY);
-		int toTileX = TileMapDrawer.pixelsToTiles(toX + sprite.getWidth() - 1);
-		int toTileY = TileMapDrawer.pixelsToTiles(toY + sprite.getHeight() - 1);
-
+		int fromTileX = Renderer.pixelsToTiles(fromX);
+		int fromTileY = Renderer.pixelsToTiles(fromY);
+		int toTileX = Renderer.pixelsToTiles(toX + box.width - 1);
+		int toTileY = Renderer.pixelsToTiles(toY + box.height - 1);
 		// check each tile for a collision
 		for (int x = fromTileX; x <= toTileX; x++) {
 			for (int y = fromTileY; y <= toTileY; y++) {
 				if (x < 0 || x >= map.getWidth() || map.getTile(x, y) != null) {
 					// collision found, return the tile
-					pointCache.setLocation(x, y);
-					return pointCache;
+					return new Point(x,y);
 				}
 			}
 		}
-
 		// no collision found
 		return null;
 	}
 
 	/**
-	 * Checks if two Sprites collide with one another. Returns false if the two
-	 * Sprites are the same. Returns false if one of the Sprites is a Creature that
-	 * is not alive.
+	* 
+	* @param enemy
+	* @param elapsedTime
+	* @return true if a horizontal collision happened
 	 */
-	public boolean isCollision(Sprite s1, Sprite s2) {
-		// if the Sprites are the same, return false
-		if (s1 == s2) {
-			return false;
+	boolean ChangeEnemyX(Enemy enemy, long elapsedTime){
+		float newX = enemy.x + enemy.dx * elapsedTime;
+		Box b = new Box();
+		b.x = enemy.x;
+		b.y = enemy.y;
+		b.width = enemy.getWidth();
+		b.height = enemy.getHeight();
+		Point tileCollision = CheckTileCollision(b, newX, b.y);
+		if (tileCollision == null){
+			enemy.x = newX;
+			b.x = newX;
 		}
-
-		// if one of the Sprites is a dead Creature, return false
-		if (s1 instanceof Creature && !((Creature) s1).isAlive()) {
-			return false;
+		else{
+			if (enemy.dx >= 0){
+				enemy.x = Renderer.tilesToPixels(tileCollision.x) - b.width;
+			}
+			else {
+				enemy.x = Renderer.tilesToPixels(tileCollision.x + 1);
+			}
+			return true;
 		}
-		if (s2 instanceof Creature && !((Creature) s2).isAlive()) {
-			return false;
+		return false;
+	}
+
+	void ChangeEnemyY(Enemy enemy, long elapsedTime){
+		float newY = enemy.y + elapsedTime * enemy.dy;
+		Box b = new Box();
+		b.x = enemy.x;
+		b.y = enemy.y;
+		b.width = enemy.getWidth();
+		b.height = enemy.getHeight();
+		Point tileCollision = CheckTileCollision(b, b.x, newY);
+		if (tileCollision == null){
+			enemy.y = newY;
 		}
+		else {
+			if (enemy.dy > 0){
+				enemy.y = Renderer.tilesToPixels(tileCollision.y) - enemy.getHeight();
+			}
+			else {
+				enemy.y = Renderer.tilesToPixels(tileCollision.y + 1);
+			}
+			enemy.dy = 0;
+		}
+	}
 
-		// get the pixel location of the Sprites
-		int s1x = Math.round(s1.getX());
-		int s1y = Math.round(s1.getY());
-		int s2x = Math.round(s2.getX());
-		int s2y = Math.round(s2.getY());
+	void ChangeEnemyHorizontalDirection(Enemy enemy, long elapsedTime, Image[] left, Image[] right){
+		if (ChangeEnemyX(enemy, elapsedTime)){
+			if (enemy.dx < 0){
+				enemy.animation.currentFrames = right;
+			}
+			else {
+				enemy.animation.currentFrames = left;
+			}
+			enemy.resetAnimation();
+			enemy.dx *= -1;
+		}
+	}
 
-		// check if the two sprites' boundaries intersect
-		return (s1x < s2x + s2.getWidth() && s2x < s1x + s1.getWidth() && s1y < s2y + s2.getHeight()
-				&& s2y < s1y + s1.getHeight());
+	void updateAliveGrub(Enemy grub, long elapsedTime){
+		//apply gravity
+		grub.dy += GRAVITY * elapsedTime;
+		ChangeEnemyHorizontalDirection(grub, elapsedTime,Enemy.EnemyAnimation.grubMovingLeftFrames, Enemy.EnemyAnimation.grubMovingRightFrames);
+		ChangeEnemyY(grub, elapsedTime);
+		//update animation
+		grub.update(elapsedTime);
+	}
+
+	void updateAliveFlies(Enemy fly, long elapsedTime){
+		//NOTE(Mouad): flies don't fall, so only change their X
+		ChangeEnemyX(fly,elapsedTime);
+		ChangeEnemyHorizontalDirection(fly, elapsedTime,Enemy.EnemyAnimation.flyMovingLeftFrames, Enemy.EnemyAnimation.flyMovingRightFrames);
+		fly.update(elapsedTime);
 	}
 
 	/**
-	 * Gets the Sprite that collides with the specified Sprite, or null if no Sprite
-	 * collides with the specified Sprite.
+	* 
+	* @return true if the player dies or the game is over, else false
 	 */
-	public Sprite getSpriteCollision(Sprite sprite) {
-
-		// run through the list of Sprites
-		Iterator i = map.getSprites();
-		while (i.hasNext()) {
-			Sprite otherSprite = (Sprite) i.next();
-			if (isCollision(sprite, otherSprite)) {
-				// collision found, return the Sprite
-				return otherSprite;
+	boolean CheckPlayerCollision(){
+		Player player = map.player;
+		//check if collided with coin
+		for (int i = 0; i < map.remainingCoins; ++i){
+			PowerUp coin = map.coins[i];
+			if (player.x + player.getWidth() >= coin.x
+				&& coin.x + coin.getWidth() >= player.x
+				&& player.y + player.getHeight() >= coin.y
+				&& coin.y + coin.getHeight() >= player.y)
+			{
+				map.collectCoin(i);
+				collectedStars++;
 			}
 		}
-
-		// no collision found
-		return null;
-	}
-
-	/**
-	 * Updates Animation, position, and velocity of all Sprites in the current map.
-	 */
-	public void update(long elapsedTime) {
-		Creature player = (Creature) map.getPlayer();
-
-		// player is dead! start map over
-		if (player.getState() == Creature.STATE_DEAD) {
-			map = mapLoader.reloadMap();
-			return;
-		}
-
-		// get keyboard/mouse input
-		checkInput();
-
-		// update player
-		updateCreature(player, elapsedTime);
-		player.update(elapsedTime);
-
-		// update other sprites
-		Iterator i = map.getSprites();
-		while (i.hasNext()) {
-			Sprite sprite = (Sprite) i.next();
-			if (sprite instanceof Creature) {
-				Creature creature = (Creature) sprite;
-				if (creature.getState() == Creature.STATE_DEAD) {
-					i.remove();
-				} else {
-					updateCreature(creature, elapsedTime);
+		//check if collided with an alive grub
+		for (int i = 0; i < map.aliveGrubs; ++i){
+			Enemy grub = map.grubs[i];
+			if (player.x + player.getWidth() >= grub.x
+				&& grub.x + grub.getWidth() >= player.x
+				&& player.y + player.getHeight() >= grub.y
+				&& grub.y + grub.getHeight() >= player.y)
+			{
+				//collision
+				//TODO(Mouad): some corner cases not covered, fix them (when the player jumping and hit a fly)
+				if (player.y + player.getHeight() < grub.y + grub.getHeight()){
+					//player kills grub
+					map.killGrub(i);
+					player.ForceJump();
 				}
-			}
-			// normal update
-			sprite.update(elapsedTime);
-		}
-	}
-
-	/**
-	 * Updates the creature, applying gravity for creatures that aren't flying, and
-	 * checks collisions.
-	 */
-	private void updateCreature(Creature creature, long elapsedTime) {
-
-		// apply gravity
-		if (!creature.isFlying()) {
-			creature.setVelocityY(creature.getVelocityY() + GRAVITY * elapsedTime);
-		}
-
-		// change x
-		float dx = creature.getVelocityX();
-		float oldX = creature.getX();
-		float newX = oldX + dx * elapsedTime;
-		Point tile = getTileCollision(creature, newX, creature.getY());
-		if (tile == null) {
-			creature.setX(newX);
-		} else {
-			// line up with the tile boundary
-			if (dx > 0) {
-				creature.setX(TileMapDrawer.tilesToPixels(tile.x) - creature.getWidth());
-			} else if (dx < 0) {
-				creature.setX(TileMapDrawer.tilesToPixels(tile.x + 1));
-			}
-			creature.collideHorizontal();
-		}
-		if (creature instanceof Player) {
-			checkPlayerCollision((Player) creature, false);
-		}
-
-		// change y
-		float dy = creature.getVelocityY();
-		float oldY = creature.getY();
-		float newY = oldY + dy * elapsedTime;
-		tile = getTileCollision(creature, creature.getX(), newY);
-		if (tile == null) {
-			creature.setY(newY);
-		} else {
-			// line up with the tile boundary
-			if (dy > 0) {
-				creature.setY(TileMapDrawer.tilesToPixels(tile.y) - creature.getHeight());
-			} else if (dy < 0) {
-				creature.setY(TileMapDrawer.tilesToPixels(tile.y + 1));
-			}
-			creature.collideVertical();
-		}
-		if (creature instanceof Player) {
-			boolean canKill = (oldY < creature.getY());
-			checkPlayerCollision((Player) creature, canKill);
-		}
-
-	}
-
-	/**
-	 * Checks for Player collision with other Sprites. If canKill is true,
-	 * collisions with Creatures will kill them.
-	 */
-	public void checkPlayerCollision(Player player, boolean canKill) {
-		if (!player.isAlive()) {
-			return;
-		}
-
-		// check for player collision with other sprites
-		Sprite collisionSprite = getSpriteCollision(player);
-		if (collisionSprite instanceof PowerUp) {
-			acquirePowerUp((PowerUp) collisionSprite);
-		} else if (collisionSprite instanceof Creature) {
-			Creature badguy = (Creature) collisionSprite;
-			if (canKill) {
-				// kill the badguy and make player bounce
-				badguy.setState(Creature.STATE_DYING);
-				player.setY(badguy.getY() - player.getHeight());
-				player.jump(true);
-			} else {
-				// player dies!
-				player.setState(Creature.STATE_DYING);
-				numLives--;
-				if (numLives == 0) {
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
+				else {
+					//player dies
+					numLives--;
+					if (numLives > 0){
+						state = GameState.PLAYER_DYING;
+						player.die();
 					}
-					stop();
+					else {
+						state = GameState.GAME_OVER;
+					}
 				}
+				return true;
 			}
 		}
+		// check if collided with an alive fly
+		for (int i= 0; i < map.aliveFlies; ++i){
+			Enemy fly = map.flies[i];
+			if (player.x + player.getWidth() >= fly.x
+				&& fly.x + fly.getWidth() >= player.x
+				&& player.y + player.getHeight() >= fly.y
+				&& fly.y + fly.getHeight() >= player.y)
+			{
+				//collision
+				if (player.y + player.getHeight() < fly.y + fly.getHeight()){
+					//player kills grub
+					map.killFly(i);
+					player.ForceJump();
+				}
+				else {
+					//playr dies
+					numLives--;
+					if (numLives > 0){
+						state = GameState.PLAYER_DYING;
+						player.die();
+					}
+					else {
+						state = GameState.GAME_OVER;
+					}
+				}
+				return true;
+			}
+		}
+		//check for collision with home
+
+		PowerUp home = map.home;
+		if (player.x + player.getWidth() >= home.x
+			&& home.x + home.getWidth() >= player.x
+			&& player.y + player.getHeight() >= home.y
+			&& home.y + home.getHeight() >= player.y)
+		{
+			ResourceManager.currentMap++;
+			map = ResourceManager.LoadMap();
+		}
+		return false;
 	}
 
 	/**
-	 * Gives the player the speicifed power up and removes it from the map.
+	* 
+	* @param fly
+	* @param elapsedTime
+	* @return true if the dyign fly finally died, else return false
 	 */
-	public void acquirePowerUp(PowerUp powerUp) {
-		// remove it from the map
-		map.removeSprite(powerUp);
+	boolean updateDyingFlies(Enemy fly, long elapsedTime){
+		//NOTE(Mouad): dying flies can't fly..  so apply gravity
+		fly.dy += GRAVITY * elapsedTime;
+		ChangeEnemyY(fly, elapsedTime);
+		fly.animation.remainingDieTime -= elapsedTime;
+		if (fly.animation.remainingDieTime <= 0){
+			return true;
+		}
+		//update animation
+		fly.update(elapsedTime);
+		return false;
+	}
 
-		if (powerUp instanceof PowerUp.Star) {
-			// do something here, like give the player points
-			collectedStars++;
-			if (collectedStars == 100) {
-				numLives++;
-				collectedStars = 0;
+	/**
+	* 
+	* @param grub
+	* @param elapsedTime
+	* @return true if the dyign grub finally died, else return false
+	 */
+	boolean updateDyingGrub(Enemy grub, long elapsedTime){
+		//NOTE(Mouad): dying grubs are not moving
+		grub.animation.remainingDieTime -= elapsedTime;
+		if (grub.animation.remainingDieTime <= 0){
+			return true;
+		}
+		//update animation
+		grub.update(elapsedTime);
+		return false;
+	}
+
+	void ChangePlayerX(long elapsedTime){
+		Player player = map.player;
+		float newX = player.x + player.dx * elapsedTime;
+		Box b = player.getBox();
+		Point tileCollision = CheckTileCollision(b, newX, b.y);
+		if (tileCollision == null){
+			player.x = newX;
+			b.x = newX;
+		}
+		else{
+			if (player.dx >= 0){
+				player.x = Renderer.tilesToPixels(tileCollision.x) - player.getWidth();
 			}
-
-		} else if (powerUp instanceof PowerUp.Music) {
-			// change the music
-
-		} else if (powerUp instanceof PowerUp.Goal) {
-			// advance to next map
-
-			map = mapLoader.loadNextMap();
-
+			else {
+				player.x = Renderer.tilesToPixels(tileCollision.x + 1);
+			}
+			b.x = player.x;
 		}
 	}
 
+	void ChangePlayerY(long elapsedTime){
+		Player player = map.player;
+		Box b = player.getBox();
+		float newY = player.y + elapsedTime * player.dy;
+		Point tileCollision = CheckTileCollision(b, b.x, newY);
+		if (tileCollision == null){
+			player.y = newY;
+		}
+		else {
+			if (player.dy > 0){
+				player.y = Renderer.tilesToPixels(tileCollision.y) - player.getHeight();
+			}
+			else {
+				player.y = Renderer.tilesToPixels(tileCollision.y + 1);
+			}
+			if (player.dy > 0) {
+				player.jumping = false;
+				// TODO(Mouad): stop jumping animation
+			}
+			player.dy = 0;
+		}
+	}
+
+	void updatePlayer(long elapsedTime){
+		//apply gravity
+		Player player = map.player;
+		player.dy += GRAVITY * elapsedTime;
+		ChangePlayerX(elapsedTime);
+		if (CheckPlayerCollision()) return;
+		ChangePlayerY(elapsedTime);
+		CheckPlayerCollision();
+	}
+
+	void updateDyingPlayer(long elapsedTime){
+		Player player = map.player;
+		Player.PlayerAnimation.remainingDieTime -= elapsedTime;
+		if (Player.PlayerAnimation.remainingDieTime <= 0){
+			state = GameState.GAME_RUNNING;
+			map = ResourceManager.LoadMap();
+			return;
+		}
+		//apply gravity
+		player.dy += GRAVITY * elapsedTime;
+		ChangePlayerY(elapsedTime);
+	}
+
+	public void update(long elapsedTime){
+		// NOTE(Mouad): player is still alive
+		checkInput();
+		updatePlayer(elapsedTime);
+		updateWorld(elapsedTime);
+	}
+
+	public void updateDying(long elapsedTime){
+		updateDyingPlayer(elapsedTime);
+		updateWorld(elapsedTime);
+	}
+
+	void updateWorld(long elapsedTime){
+		map.player.updateAnimation(elapsedTime);
+		//update living enemies
+		//NOTE(Mouad): we update the position and then we check for any collision with tiles,
+		//we also update the animation
+		//update living grubs
+		for (int i = 0; i < map.aliveGrubs; ++i){
+			updateAliveGrub(map.grubs[i], elapsedTime);
+		}
+		//update living flies
+		for (int i = 0; i < map.aliveFlies; ++i){
+			updateAliveFlies(map.flies[i], elapsedTime);
+		}
+		//update the dying flies
+		for (int i = map.aliveFlies; i < map.aliveFlies + map.dyingFlies;){
+			//NOTE(Mouad): dying flies are subject to gravity
+			if (updateDyingFlies(map.flies[i],elapsedTime)){
+				map.flyDied(i);
+			}
+			else{
+				i++;
+			}
+		}
+		for (int i = map.aliveGrubs; i < map.aliveGrubs + map.dyingGrubs;){
+			//NOTE(Mouad): dying grubs are always on ground, so no need to apply gravity
+			// or check for collision with the tiles
+			if (updateDyingGrub(map.grubs[i],elapsedTime)){
+				map.grubDied(i);
+			}
+			else{
+				i++;
+			}
+		}
+		//update the remaining coins
+		for (int i = 0; i < map.remainingCoins; ++i){
+			map.coins[i].update(elapsedTime);
+		}
+	}
 }
