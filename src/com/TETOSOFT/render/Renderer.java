@@ -60,7 +60,7 @@ public class Renderer {
 		int enemyScreenX = Math.round(enemy.x) - screenWolrdPositionX;
 		int enemyScreenY = Math.round(enemy.y) - screenWolrdPositionY;
 		g.drawImage(enemy.getImage(), enemyScreenX, enemyScreenY,null);
-		g.setColor(Color.RED);
+		g.setColor(Color.BLUE);
 		g.drawRect(enemyScreenX, enemyScreenY, enemy.getWidth(), enemy.getHeight());
 		if (enemy.dx == 0 && enemyScreenX >= 0 && enemyScreenX <= screenWidth
 				&& enemyScreenY >= 0 && enemyScreenY <= screenHeight){
@@ -70,7 +70,6 @@ public class Renderer {
 	}
 
 	public static void renderMap(Graphics2D g,TileMap map,int screenWidth, int screenHeight){
-		//TODO(Mouad): check y-axis sign, maybe you got the orientation wrong
 		//draw the background if exist
 		if (background != null){
 			int backgroundWidth = background.getWidth(null);
@@ -130,8 +129,10 @@ public class Renderer {
 		int playerScreenY = Math.round(player.y) - screenWolrdPositionY;
 		g.drawImage(player.getImage(), playerScreenX, playerScreenY, null);
 		// TODO(Mouad): for debug only, remove them when done
-		g.setColor(Color.WHITE);
-		g.drawRect(playerScreenX, playerScreenY, player.getWidth(), player.getHeight());
+		g.setColor(Color.RED);
+		g.drawRect(playerScreenX, playerScreenY, player.getWidth(), player.weakSpotHeight);
+		g.setColor(Color.GREEN);
+		g.drawRect(playerScreenX , playerScreenY + player.weakSpotHeight, player.getWidth(), player.getHeight() - player.weakSpotHeight);
 	}
 
 	public static void renderHUD(Graphics2D g, int collectedStars, int numLives, int frameCount){

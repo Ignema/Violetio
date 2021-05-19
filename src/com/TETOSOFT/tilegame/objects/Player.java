@@ -10,6 +10,9 @@ public class Player {
 	public float dx = 0, dy = 0;
 	public boolean jumping = false;
 	public final float max_dx = 0.5f, max_dy = -1f;
+	public final int weakSpotWidth;
+	public final int weakSpotHeight;
+
 	public static class PlayerAnimation
 	{
 		//NOTE(Mouad): everything is static because we only gonna have one player
@@ -35,6 +38,7 @@ public class Player {
 			ForceJump();
 		}
 	}
+
 	public void ForceJump(){
 		jumping = true;
 		dy = max_dy;
@@ -46,6 +50,19 @@ public class Player {
 		}
 		else{
 			PlayerAnimation.currentFrames = PlayerAnimation.jumpingLeftFrames;
+		}
+	}
+
+	public void StopJump(){
+		jumping = false;
+		dy = 0;
+		if (PlayerAnimation.currentFrames == PlayerAnimation.jumpingRightFrames){
+			if(dx > 0) PlayerAnimation.currentFrames = PlayerAnimation.movingRightFrames;
+			else PlayerAnimation.currentFrames = PlayerAnimation.idleRightFrames;
+		}
+		else if (PlayerAnimation.currentFrames == PlayerAnimation.jumpingLeftFrames){
+			if (dx < 0) PlayerAnimation.currentFrames = PlayerAnimation.movingLeftFrames;
+			else PlayerAnimation.currentFrames = PlayerAnimation.idleLeftFrames;
 		}
 	}
 
@@ -67,6 +84,8 @@ public class Player {
 
 	public Player(){
 		PlayerAnimation.currentFrames = PlayerAnimation.idleRightFrames;
+		weakSpotWidth = getWidth();
+		weakSpotHeight = 9 * getHeight() / 10 ;
 	}
 	public void moveLeft(){
 		PlayerAnimation.currentFrames = PlayerAnimation.movingLeftFrames;

@@ -117,7 +117,6 @@ public abstract class GameCore {
 			{
 				case GAME_RUNNING:
 					{
-						//TODO(Mouad): handle inputs
 						update(elapsedTime);
 						// draw the screen
 						Graphics2D g = screen.getGraphics();

@@ -220,13 +220,7 @@ public class GameEngine extends GameCore {
 				&& grub.y + grub.getHeight() >= player.y)
 			{
 				//collision
-				//TODO(Mouad): some corner cases not covered, fix them (when the player jumping and hit a fly)
-				if (player.y + player.getHeight() < grub.y + grub.getHeight()){
-					//player kills grub
-					map.killGrub(i);
-					player.ForceJump();
-				}
-				else {
+				if (player.y + player.weakSpotHeight >= grub.y){
 					//player dies
 					numLives--;
 					if (numLives > 0){
@@ -236,6 +230,11 @@ public class GameEngine extends GameCore {
 					else {
 						state = GameState.GAME_OVER;
 					}
+				}
+				else{
+					//player kills grub
+					map.killGrub(i);
+					player.ForceJump();
 				}
 				return true;
 			}
@@ -249,13 +248,8 @@ public class GameEngine extends GameCore {
 				&& fly.y + fly.getHeight() >= player.y)
 			{
 				//collision
-				if (player.y + player.getHeight() < fly.y + fly.getHeight()){
-					//player kills grub
-					map.killFly(i);
-					player.ForceJump();
-				}
-				else {
-					//playr dies
+				if (player.y + player.weakSpotHeight >= fly.y){
+					//player dies
 					numLives--;
 					if (numLives > 0){
 						state = GameState.PLAYER_DYING;
@@ -264,6 +258,11 @@ public class GameEngine extends GameCore {
 					else {
 						state = GameState.GAME_OVER;
 					}
+				}
+				else{
+					//player kills grub
+					map.killFly(i);
+					player.ForceJump();
 				}
 				return true;
 			}
@@ -354,8 +353,7 @@ public class GameEngine extends GameCore {
 				player.y = Renderer.tilesToPixels(tileCollision.y + 1);
 			}
 			if (player.dy > 0) {
-				player.jumping = false;
-				// TODO(Mouad): stop jumping animation
+				player.StopJump();
 			}
 			player.dy = 0;
 		}
