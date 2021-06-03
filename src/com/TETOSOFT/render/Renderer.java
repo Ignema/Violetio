@@ -42,8 +42,18 @@ public class Renderer {
 		// return numTiles * TILE_SIZE;
 	}
 
-	public static void renderMenu(){
+	public static void renderMenu(Graphics2D g, int screenWidth, int screenHeight){
 		//TODO: render the menu here
+		//TODO: draw some background
+		//TODO: draw buttons
+
+		//NOTE(Mouad): this code jsut for testing
+		g.setColor(Color.BLACK);
+		g.fillRect(0,0, screenWidth, screenHeight);
+		Font font0 = new Font("arial",Font.BOLD, 18);
+		g.setFont(font0);
+		g.setColor(Color.red);
+		g.drawString("Hello, press space to start!", screenWidth / 2 - 100, screenHeight / 2 -10);
 	}
 
 	public static void renderGameOverMenu(Graphics2D g, int screenWidth, int screenHeight){

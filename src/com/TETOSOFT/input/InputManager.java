@@ -2,6 +2,7 @@ package com.TETOSOFT.input;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import javax.swing.SwingUtilities;
 
 public class InputManager implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
@@ -185,4 +186,8 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
 	public void mouseWheelMoved(MouseWheelEvent e) {
 	}
 
+	public void clearKeysState() {
+		Arrays.fill(keyboardState, false);
+		Arrays.fill(mouseState, false);
+	}
 }
