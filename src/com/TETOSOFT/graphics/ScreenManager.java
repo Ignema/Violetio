@@ -3,22 +3,26 @@ package com.TETOSOFT.graphics;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class ScreenManager {
-	private GraphicsDevice device;
-
+	private final GraphicsDevice device;
+	private BufferStrategy strategy;
+	private int width;
+	private int height;
+	Window fullScreenWindow;
 	public ScreenManager() {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
+
 	}
 
-	public DisplayMode findFirstCompatibleMode(DisplayMode modes[]) {
-		DisplayMode goodModes[] = device.getDisplayModes();
-		for (int i = 0; i < modes.length; i++) {
-			for (int j = 0; j < goodModes.length; j++) {
-				if (displayModesMatch(modes[i], goodModes[j])) {
-					return modes[i];
+	public DisplayMode findFirstCompatibleMode(DisplayMode[] modes) {
+		DisplayMode[] goodModes = device.getDisplayModes();
+		for (DisplayMode mode : modes) {
+			for (DisplayMode goodMode : goodModes) {
+				if (displayModesMatch(mode, goodMode)) {
+					return mode;
 				}
 			}
 		}
@@ -46,7 +50,7 @@ public class ScreenManager {
 
 	public void setFullScreen(DisplayMode displayMode) {
 		final JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setUndecorated(true);
 		frame.setIgnoreRepaint(true);
 		frame.setResizable(false);
@@ -56,75 +60,47 @@ public class ScreenManager {
 		if (displayMode != null && device.isDisplayChangeSupported()) {
 			try {
 				device.setDisplayMode(displayMode);
-			} catch (IllegalArgumentException ex) {
+			} catch (IllegalArgumentException ignored) {
 			}
 
 			frame.setSize(displayMode.getWidth(), displayMode.getHeight());
+			width = displayMode.getWidth();
+			height = displayMode.getHeight();
 		}
 
 		try {
-			EventQueue.invokeAndWait(new Runnable() {
-				public void run() {
-					frame.createBufferStrategy(2);
-				}
-			});
-		} catch (InterruptedException ex) {
-			// ignore
-		} catch (InvocationTargetException ex) {
-			// ignore
-		}
-
+			EventQueue.invokeAndWait(() -> frame.createBufferStrategy(2));
+		} catch (InterruptedException | InvocationTargetException ignored) {}
+		strategy = frame.getBufferStrategy();
+		fullScreenWindow = frame;
 	}
 
 	public Graphics2D getGraphics() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			BufferStrategy strategy = window.getBufferStrategy();
-			return (Graphics2D) strategy.getDrawGraphics();
-		}
-
-		return null;
-
+		return (strategy != null) ? (Graphics2D) strategy.getDrawGraphics() : null;
 	}
 
 	public void update() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			BufferStrategy strategy = window.getBufferStrategy();
-			if (!strategy.contentsLost()) {
-				strategy.show();
-			}
+		if (!strategy.contentsLost()) {
+			strategy.show();
 		}
-
 		Toolkit.getDefaultToolkit().sync();
 	}
 
 	public JFrame getFullScreenWindow() {
-		return (JFrame) device.getFullScreenWindow();
+		return (JFrame) fullScreenWindow;
 	}
 
 	public int getWidth() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			return window.getWidth();
-		} else {
-			return 0;
-		}
+		return width;
 	}
 
 	public int getHeight() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			return window.getHeight();
-		} else {
-			return 0;
-		}
+		return height;
 	}
 
 	public void restoreScreen() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			window.dispose();
+		if (fullScreenWindow != null) {
+			fullScreenWindow.dispose();
 		}
 		device.setFullScreenWindow(null);
 	}

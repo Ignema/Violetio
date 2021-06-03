@@ -49,7 +49,7 @@ public class Renderer {
 
 		//NOTE(Mouad): this code jsut for testing
 		g.setColor(Color.BLACK);
-		g.fillRect(0,0, screenWidth, screenHeight);
+		//g.fillRect(0,0, screenWidth, screenHeight);
 		Font font0 = new Font("arial",Font.BOLD, 18);
 		g.setFont(font0);
 		g.setColor(Color.red);
