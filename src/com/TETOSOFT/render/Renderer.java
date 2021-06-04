@@ -69,13 +69,17 @@ public class Renderer {
 	static void renderEnemy(Graphics2D g, Enemy enemy, int screenWolrdPositionX, int screenWolrdPositionY, int screenWidth, int screenHeight, float newSpeed){
 		int enemyScreenX = Math.round(enemy.x) - screenWolrdPositionX;
 		int enemyScreenY = Math.round(enemy.y) - screenWolrdPositionY;
-		g.drawImage(enemy.getImage(), enemyScreenX, enemyScreenY,null);
-		g.setColor(Color.BLUE);
-		g.drawRect(enemyScreenX, enemyScreenY, enemy.getWidth(), enemy.getHeight());
-		if (enemy.dx == 0 && enemyScreenX >= 0 && enemyScreenX <= screenWidth
-				&& enemyScreenY >= 0 && enemyScreenY <= screenHeight){
-			//wake up
-			enemy.dx = newSpeed;
+
+		if (enemyScreenX + enemy.getWidth() >= 0 && enemyScreenX <= screenWidth
+				&& enemyScreenY + enemy.getHeight() >= 0 && enemyScreenY <= screenHeight){
+			//draw only if visible
+			g.drawImage(enemy.getImage(), enemyScreenX, enemyScreenY,null);
+			g.setColor(Color.BLUE);
+			g.drawRect(enemyScreenX, enemyScreenY, enemy.getWidth(), enemy.getHeight());
+			if (enemy.dx == 0) {
+				//wake up
+				enemy.dx = newSpeed;
+			}
 		}
 	}
 
@@ -111,6 +115,8 @@ public class Renderer {
 				int tileWorldX = tilesToPixels(j);
 				int tileScreenX = tileWorldX - screenWolrdPositionX;
 				int tileScreenY = tileWorldY - screenWolrdPositionY;
+				if (tileScreenX + TILE_SIZE >= 0 && tileScreenX <= screenWidth
+						&& tileScreenY + TILE_SIZE >= 0 && tileScreenY <= screenHeight)
 				g.drawImage(map.tiles[i][j], tileScreenX, tileScreenY, TILE_SIZE, TILE_SIZE, null);
 			}
 		}

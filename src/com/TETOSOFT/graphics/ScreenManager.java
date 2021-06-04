@@ -2,19 +2,27 @@ package com.TETOSOFT.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
 
 public class ScreenManager {
 	private final GraphicsDevice device;
 	private BufferStrategy strategy;
-	private int width;
-	private int height;
+	private int screenWidth;
+	private int screenHeight;
+	private int targetWidth;
+	private int targetHeight;
+	private float scaleWidth;
+	private float scaleHeight;
+
 	Window fullScreenWindow;
+	BufferedImage buffer;
 	public ScreenManager() {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
-
+		screenWidth = device.getDisplayMode().getWidth();
+		screenHeight = device.getDisplayMode().getHeight();
 	}
 
 	public DisplayMode findFirstCompatibleMode(DisplayMode[] modes) {
@@ -59,13 +67,19 @@ public class ScreenManager {
 
 		if (displayMode != null && device.isDisplayChangeSupported()) {
 			try {
-				device.setDisplayMode(displayMode);
+				//device.setDisplayMode(displayMode);
 			} catch (IllegalArgumentException ignored) {
 			}
 
-			frame.setSize(displayMode.getWidth(), displayMode.getHeight());
-			width = displayMode.getWidth();
-			height = displayMode.getHeight();
+			frame.setSize(screenWidth, screenHeight);
+			targetWidth = displayMode.getWidth();
+			targetHeight = displayMode.getHeight();
+			scaleHeight = (float) screenHeight / targetHeight;
+			scaleWidth = (float) screenWidth / targetWidth;
+			if (scaleHeight < scaleWidth) scaleWidth = scaleHeight;
+			else scaleHeight = scaleWidth;
+
+			buffer = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		try {
@@ -76,10 +90,21 @@ public class ScreenManager {
 	}
 
 	public Graphics2D getGraphics() {
-		return (strategy != null) ? (Graphics2D) strategy.getDrawGraphics() : null;
+		if (buffer != null) {
+			Graphics2D g = (Graphics2D) buffer.getGraphics();
+			g.clearRect(0, 0, targetWidth, targetHeight);
+			return g;
+		}
+		return null;
+		//return (strategy != null) ? (Graphics2D) strategy.getDrawGraphics() : null;
 	}
 
 	public void update() {
+		Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+		int finalWidth = (int)(targetWidth * scaleWidth);
+		int finalHeight = (int)(targetHeight * scaleHeight);
+		g.drawImage(buffer,(screenWidth - finalWidth)/2, (screenHeight - finalHeight) / 2, finalWidth, finalHeight, null);
+		g.dispose();
 		if (!strategy.contentsLost()) {
 			strategy.show();
 		}
@@ -91,11 +116,11 @@ public class ScreenManager {
 	}
 
 	public int getWidth() {
-		return width;
+		return targetWidth;
 	}
 
 	public int getHeight() {
-		return height;
+		return targetHeight;
 	}
 
 	public void restoreScreen() {
