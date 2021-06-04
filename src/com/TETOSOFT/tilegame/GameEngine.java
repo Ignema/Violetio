@@ -36,7 +36,7 @@ public class GameEngine extends GameCore {
 		Renderer.background = ResourceManager.LoadImage("background.jpg");
 		// load first map
 		map = ResourceManager.LoadMap();
-		state = GameState.GAME_RUNNING;
+		state = GameState.MENU;
 	}
 
 	/**
@@ -78,6 +78,20 @@ public class GameEngine extends GameCore {
 		player.dx = velocityX;
 	}
 
+
+	public void drawMainMenu(Graphics2D g){
+		Renderer.renderMenu(g, screen.getWidth(), screen.getHeight());
+	}
+
+	@Override
+	public void checkMainMenuInput() {
+		boolean[] keys = inputManager.keyboardState;
+		if (keys[KeyEvent.VK_SPACE]) {
+			//TODO: maybe display a menu instead of quiting
+			state = GameState.GAME_RUNNING;
+			inputManager.clearKeysState();
+		}
+	}
 
 	public void drawGameOverMenu(Graphics2D g){
 		Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());

@@ -2,23 +2,35 @@ package com.TETOSOFT.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class ScreenManager {
-	private GraphicsDevice device;
+	private final GraphicsDevice device;
+	private BufferStrategy strategy;
+	private int screenWidth;
+	private int screenHeight;
+	private int targetWidth;
+	private int targetHeight;
+	private float scaleWidth;
+	private float scaleHeight;
 
+	Window fullScreenWindow;
+	BufferedImage buffer;
 	public ScreenManager() {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		device = environment.getDefaultScreenDevice();
+		screenWidth = device.getDisplayMode().getWidth();
+		screenHeight = device.getDisplayMode().getHeight();
 	}
 
-	public DisplayMode findFirstCompatibleMode(DisplayMode modes[]) {
-		DisplayMode goodModes[] = device.getDisplayModes();
-		for (int i = 0; i < modes.length; i++) {
-			for (int j = 0; j < goodModes.length; j++) {
-				if (displayModesMatch(modes[i], goodModes[j])) {
-					return modes[i];
+	public DisplayMode findFirstCompatibleMode(DisplayMode[] modes) {
+		DisplayMode[] goodModes = device.getDisplayModes();
+		for (DisplayMode mode : modes) {
+			for (DisplayMode goodMode : goodModes) {
+				if (displayModesMatch(mode, goodMode)) {
+					return mode;
 				}
 			}
 		}
@@ -46,7 +58,7 @@ public class ScreenManager {
 
 	public void setFullScreen(DisplayMode displayMode) {
 		final JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setUndecorated(true);
 		frame.setIgnoreRepaint(true);
 		frame.setResizable(false);
@@ -55,76 +67,65 @@ public class ScreenManager {
 
 		if (displayMode != null && device.isDisplayChangeSupported()) {
 			try {
-				device.setDisplayMode(displayMode);
-			} catch (IllegalArgumentException ex) {
+				//device.setDisplayMode(displayMode);
+			} catch (IllegalArgumentException ignored) {
 			}
 
-			frame.setSize(displayMode.getWidth(), displayMode.getHeight());
+			frame.setSize(screenWidth, screenHeight);
+			targetWidth = displayMode.getWidth();
+			targetHeight = displayMode.getHeight();
+			scaleHeight = (float) screenHeight / targetHeight;
+			scaleWidth = (float) screenWidth / targetWidth;
+			if (scaleHeight < scaleWidth) scaleWidth = scaleHeight;
+			else scaleHeight = scaleWidth;
+
+			buffer = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		try {
-			EventQueue.invokeAndWait(new Runnable() {
-				public void run() {
-					frame.createBufferStrategy(2);
-				}
-			});
-		} catch (InterruptedException ex) {
-			// ignore
-		} catch (InvocationTargetException ex) {
-			// ignore
-		}
-
+			EventQueue.invokeAndWait(() -> frame.createBufferStrategy(2));
+		} catch (InterruptedException | InvocationTargetException ignored) {}
+		strategy = frame.getBufferStrategy();
+		fullScreenWindow = frame;
 	}
 
 	public Graphics2D getGraphics() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			BufferStrategy strategy = window.getBufferStrategy();
-			return (Graphics2D) strategy.getDrawGraphics();
+		if (buffer != null) {
+			Graphics2D g = (Graphics2D) buffer.getGraphics();
+			g.clearRect(0, 0, targetWidth, targetHeight);
+			return g;
 		}
-
 		return null;
-
+		//return (strategy != null) ? (Graphics2D) strategy.getDrawGraphics() : null;
 	}
 
 	public void update() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			BufferStrategy strategy = window.getBufferStrategy();
-			if (!strategy.contentsLost()) {
-				strategy.show();
-			}
+		Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+		int finalWidth = (int)(targetWidth * scaleWidth);
+		int finalHeight = (int)(targetHeight * scaleHeight);
+		g.drawImage(buffer,(screenWidth - finalWidth)/2, (screenHeight - finalHeight) / 2, finalWidth, finalHeight, null);
+		g.dispose();
+		if (!strategy.contentsLost()) {
+			strategy.show();
 		}
-
 		Toolkit.getDefaultToolkit().sync();
 	}
 
 	public JFrame getFullScreenWindow() {
-		return (JFrame) device.getFullScreenWindow();
+		return (JFrame) fullScreenWindow;
 	}
 
 	public int getWidth() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			return window.getWidth();
-		} else {
-			return 0;
-		}
+		return targetWidth;
 	}
 
 	public int getHeight() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			return window.getHeight();
-		} else {
-			return 0;
-		}
+		return targetHeight;
 	}
 
 	public void restoreScreen() {
-		Window window = device.getFullScreenWindow();
-		if (window != null) {
-			window.dispose();
+		if (fullScreenWindow != null) {
+			fullScreenWindow.dispose();
 		}
 		device.setFullScreenWindow(null);
 	}

@@ -158,6 +158,11 @@ public abstract class GameCore {
 				case MENU:
 					{
 						//DO menu stuff here
+						Graphics2D g = screen.getGraphics();
+						checkMainMenuInput();
+						drawMainMenu(g);
+						g.dispose();
+						screen.update();
 					}
 			}
 
@@ -188,4 +193,6 @@ public abstract class GameCore {
 	 */
 	public abstract void drawGame(Graphics2D g);
 	public abstract void drawGameOverMenu(Graphics2D g);
+	public abstract void drawMainMenu(Graphics2D g);
+	public abstract void checkMainMenuInput();
 }
