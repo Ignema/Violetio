@@ -27,7 +27,13 @@ public class GameEngine extends GameCore {
     private InputManager inputManager;
 
     private int collectedStars = 0;
-    private int numLives = 6;
+
+    public int getCollectedStars() {
+        return collectedStars;
+    }
+
+    private int realNumLives=2;
+    private int numLives = realNumLives;
 
     public void init() {
         super.init();
@@ -92,6 +98,7 @@ public class GameEngine extends GameCore {
     @Override
     public void checkMainMenuInput() {
         boolean[] keys = inputManager.keyboardState;
+
         if (keys[KeyEvent.VK_SPACE] && state == GameState.MAIN_MENU) {
             //TODO: maybe display a menu instead of quiting
             state = GameState.GAME_RUNNING;
@@ -111,11 +118,25 @@ public class GameEngine extends GameCore {
             state = GameState.MAIN_MENU;
             inputManager.clearKeysState();
         }
+        if(keys[KeyEvent.VK_ESCAPE] && state == GameState.GAME_OVER){
+            state = GameState.MAIN_MENU;
+            numLives=realNumLives;
+            collectedStars=0;
+            map = ResourceManager.LoadMap();
+            inputManager.clearKeysState();
+        }
+        if(keys[KeyEvent.VK_R] && state==GameState.GAME_OVER){
+            state = GameState.GAME_RUNNING;
+            numLives=realNumLives;
+            collectedStars=0;
+            map = ResourceManager.LoadMap();
+            inputManager.clearKeysState();
+        }
     }
 
     public void drawGameOverMenu(Graphics2D g) {
         Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
-        Renderer.renderGameOverMenu(g, screen.getWidth(), screen.getHeight());
+        Renderer.renderGameOverMenu(g, screen.getWidth(), screen.getHeight(),collectedStars);
     }
 
     public void drawGame(Graphics2D g) {
@@ -248,11 +269,12 @@ public class GameEngine extends GameCore {
                 if (player.y + player.weakSpotHeight >= grub.y) {
                     //player dies
                     numLives--;
+                    player.die();
                     if (numLives > 0) {
                         state = GameState.PLAYER_DYING;
-                        player.die();
                     } else {
                         state = GameState.GAME_OVER;
+
                     }
                 } else {
                     //player kills grub
@@ -273,11 +295,13 @@ public class GameEngine extends GameCore {
                 if (player.y + player.weakSpotHeight >= fly.y) {
                     //player dies
                     numLives--;
+                    player.die();
                     if (numLives > 0) {
                         state = GameState.PLAYER_DYING;
-                        player.die();
+
                     } else {
                         state = GameState.GAME_OVER;
+
                     }
                 } else {
                     //player kills grub

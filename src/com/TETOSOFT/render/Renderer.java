@@ -1,6 +1,7 @@
 package com.TETOSOFT.render;
 
 import com.TETOSOFT.resource.ResourceManager;
+import com.TETOSOFT.tilegame.GameEngine;
 import com.TETOSOFT.tilegame.TileMap;
 import com.TETOSOFT.tilegame.objects.Enemy;
 import com.TETOSOFT.tilegame.objects.Player;
@@ -76,14 +77,22 @@ public class Renderer {
 
     }
 
-    public static void renderGameOverMenu(Graphics2D g, int screenWidth, int screenHeight) {
+    public static void renderGameOverMenu(Graphics2D g, int screenWidth, int screenHeight, int score) {
         int alfa = 200;
-        Color customColor = new Color(100, 100, 100, alfa);
+        Color customColor = new Color(0, 0, 0, alfa);
         g.setColor(customColor);
         g.fillRect(0, 0, screenWidth, screenHeight);
         g.setColor(Color.RED);
-        g.drawString("GameOver", screenWidth / 2 - 50, screenHeight / 2 - 10);
-        //TODO : rendrer some buttons or idk
+        g.drawString(String.format("Your score is :  %d", score), screenWidth / 2 - 200, screenHeight / 2 -200);
+
+        //TODO : rendrer some buttons or idk (Done)
+        Font font0 = new Font("arial", Font.PLAIN, 25);
+        Rectangle GameOver = new Rectangle(screenWidth / 2 -200, screenHeight / 2 -150, 400, 50);
+        stringDrawer.drawCenteredString(g, "Game Over , Try Again (Press R) ", GameOver, font0,Color.RED);
+        Rectangle BackBtn = new Rectangle(screenWidth / 2 -150, screenHeight / 2 -70, 300, 50);
+        stringDrawer.drawCenteredString(g, "Main Menu (Press ESC)", BackBtn, font0,Color.RED);
+        Rectangle exitBtn = new Rectangle(screenWidth / 2 -125, screenHeight / 2 +10, 250, 50);
+        stringDrawer.drawCenteredString(g, "Exit (Press Q)", exitBtn, font0,Color.RED);
     }
 
     static void renderEnemy(Graphics2D g, Enemy enemy, int screenWolrdPositionX, int screenWolrdPositionY, int screenWidth, int screenHeight, float newSpeed) {

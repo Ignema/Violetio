@@ -110,7 +110,6 @@ public abstract class GameCore {
 		long currTime = startTime;
 		long secondCountdown = 1000;
 		int currentFrameCount = 0;
-
 		while (isRunning) {
 			long elapsedTime = System.currentTimeMillis() - currTime;
 			currTime += elapsedTime;
@@ -152,9 +151,11 @@ public abstract class GameCore {
 				case GAME_OVER :
 					{
 						Graphics2D g = screen.getGraphics();
+						checkMainMenuInput();
 						drawGameOverMenu(g);
 						g.dispose();
 						screen.update();
+
 					} break;
 				case MAIN_MENU: {
 					//DO menu stuff here
