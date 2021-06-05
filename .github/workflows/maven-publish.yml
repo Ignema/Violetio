@@ -41,11 +41,7 @@ jobs:
       uses: qcastel/github-actions-maven-release@v1.12.12
       with:
         access-token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
-      
-    - name: Publish JAR
-      run: mvn -B release:prepare release:perform
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+        release-branch-name: "main"
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
