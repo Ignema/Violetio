@@ -85,14 +85,15 @@ public abstract class GameCore {
 	 * Sets full screen mode and initiates and objects.
 	 */
 	public void init() {
+		System.setProperty("sun.java2d.opengl", "true");
 		screen = new ScreenManager();
 		DisplayMode displayMode = screen.findFirstCompatibleMode(POSSIBLE_MODES);
 		screen.setFullScreen(displayMode);
 
 		Window window = screen.getFullScreenWindow();
 		window.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
-		window.setBackground(Color.GREEN);
-		window.setForeground(Color.GREEN);
+		window.setBackground(Color.BLACK);
+		window.setForeground(Color.BLACK);
 
 		isRunning = true;
 	}
