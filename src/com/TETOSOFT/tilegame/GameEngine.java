@@ -93,7 +93,6 @@ public class GameEngine extends GameCore {
     public void checkMainMenuInput() {
         boolean[] keys = inputManager.keyboardState;
         if (keys[KeyEvent.VK_SPACE] && state == GameState.MAIN_MENU) {
-            //TODO: maybe display a menu instead of quiting
             state = GameState.GAME_RUNNING;
             inputManager.clearKeysState();
         }

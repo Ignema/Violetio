@@ -162,7 +162,10 @@ public class Renderer {
         // draw player
         int playerScreenX = Math.round(player.x) - screenWolrdPositionX;
         int playerScreenY = Math.round(player.y) - screenWolrdPositionY;
-        g.drawImage(player.getImage(), playerScreenX, playerScreenY, null);
+        g.drawImage(player.getImage(),
+                playerScreenX, playerScreenY,playerScreenX + player.getWidth(),playerScreenY+ player.getHeight(),
+                0,0, player.getWidth(), player.getHeight(),
+                null);
         // TODO(Mouad): for debug only, remove them when done
         g.setColor(Color.RED);
         g.drawRect(playerScreenX, playerScreenY, player.getWidth(), player.weakSpotHeight);

@@ -48,16 +48,32 @@ public class ResourceManager {
 	public static void InitImages(){
 		//load player images
 		//TODO: add more animation
-		Player.PlayerAnimation.idleLeftFrames = new Image[1];
-		Player.PlayerAnimation.idleRightFrames = new Image[1];
+		int playerIdleFrameCount = 8;
+		//NOTE: player will have fixed size
+		Player.width = 40;
+		Player.height = 80;
+		Player.PlayerAnimation.idleLeftFrames = new Image[playerIdleFrameCount];
+		Player.PlayerAnimation.idleRightFrames = new Image[playerIdleFrameCount];
 		Player.PlayerAnimation.dyingLeftFrames = new Image[1];
 		Player.PlayerAnimation.dyingRightFrames = new Image[1];
-		Image playerIdleLeft = LoadImage("player.png");
-		Image playerIdleRight = getMirrorImage(playerIdleLeft);
-		Player.PlayerAnimation.idleLeftFrames[0] = playerIdleLeft;
-		Player.PlayerAnimation.idleRightFrames[0] = getMirrorImage(playerIdleLeft);
-		Player.PlayerAnimation.dyingLeftFrames[0] = getFlippedImage(playerIdleLeft);
-		Player.PlayerAnimation.dyingRightFrames[0] = getFlippedImage(playerIdleRight);
+		for (int frame = 0; frame < playerIdleFrameCount; ++frame)
+		{
+			String fileName = "Assets/player/idle/" + (frame + 1) + ".png";
+			Image playerImage = new ImageIcon(fileName).getImage();
+			Image newImage = gc.createCompatibleImage(Player.width, Player.height);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.drawImage(playerImage, 0,0, Player.width,Player.height, null);
+			g.dispose();
+
+			Image playerIdleRight = newImage;
+			Image playerIdleLeft = getMirrorImage(playerIdleRight);
+
+			Player.PlayerAnimation.idleLeftFrames[frame] = playerIdleLeft;
+			Player.PlayerAnimation.idleRightFrames[frame] = getMirrorImage(playerIdleLeft);
+		}
+
+		Player.PlayerAnimation.dyingLeftFrames[0] = getFlippedImage(Player.PlayerAnimation.idleLeftFrames[0]);
+		Player.PlayerAnimation.dyingRightFrames[0] = getFlippedImage(Player.PlayerAnimation.idleRightFrames[0]);
 		Player.PlayerAnimation.jumpingLeftFrames = Player.PlayerAnimation.idleLeftFrames;
 		Player.PlayerAnimation.jumpingRightFrames = Player.PlayerAnimation.idleRightFrames;
 		Player.PlayerAnimation.movingLeftFrames = Player.PlayerAnimation.idleLeftFrames;

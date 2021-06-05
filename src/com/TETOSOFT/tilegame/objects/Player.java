@@ -12,6 +12,9 @@ public class Player {
 	public final float max_dx = 0.5f, max_dy = -1f;
 	public final int weakSpotWidth;
 	public final int weakSpotHeight;
+	public static int width;
+	public static int height;
+
 
 	public static class PlayerAnimation
 	{
@@ -25,7 +28,7 @@ public class Player {
 		static public Image[] dyingLeftFrames;
 		static public Image[] dyingRightFrames;
 		static public Image[] currentFrames;
-		static public long frameDuration = 250;
+		static public long frameDuration = 125;
 		static public long currentFrameDuration;
 		static public int currentFrameIndex = 0;
 		static public long remainingDieTime;
@@ -98,10 +101,11 @@ public class Player {
 		PlayerAnimation.currentFrameDuration = PlayerAnimation.frameDuration;
 	}
 	public int getWidth(){
-		return getImage().getWidth(null);
+		return width;
 	}
 	public int getHeight(){
-		return getImage().getHeight(null);
+		//NOTE(Mouad): subtract 6 pixels to make the player's feet touch the ground
+		return height - 6;
 	}
 	public Box getBox(){
 		Box b = new Box();
@@ -114,6 +118,7 @@ public class Player {
 
 	public void die(){
 		PlayerAnimation.remainingDieTime = PlayerAnimation.DIE_TIME;
+		PlayerAnimation.currentFrameIndex = 0;
 		if (PlayerAnimation.currentFrames == PlayerAnimation.movingRightFrames ||
 			PlayerAnimation.currentFrames == PlayerAnimation.idleRightFrames ||
 			PlayerAnimation.currentFrames == PlayerAnimation.jumpingRightFrames
