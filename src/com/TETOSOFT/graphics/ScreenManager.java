@@ -103,6 +103,7 @@ public class ScreenManager {
 		Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
 		int finalWidth = (int)(targetWidth * scaleWidth);
 		int finalHeight = (int)(targetHeight * scaleHeight);
+		g.clearRect(0,0,screenWidth,screenHeight);
 		g.drawImage(buffer,(screenWidth - finalWidth)/2, (screenHeight - finalHeight) / 2, finalWidth, finalHeight, null);
 		g.dispose();
 		if (!strategy.contentsLost()) {

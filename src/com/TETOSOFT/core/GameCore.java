@@ -12,10 +12,11 @@ import com.TETOSOFT.resource.ResourceManager;
  */
 public abstract class GameCore {
 	public enum GameState{
-		MENU,
+		MAIN_MENU,
 		GAME_RUNNING,
 		PLAYER_DYING,
-		GAME_OVER
+		GAME_OVER,
+		OPTION_MENU
 	};
 	protected static final int FONT_SIZE = 18;
 
@@ -90,8 +91,8 @@ public abstract class GameCore {
 
 		Window window = screen.getFullScreenWindow();
 		window.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
-		window.setBackground(Color.BLACK);
-		window.setForeground(Color.WHITE);
+		window.setBackground(Color.GREEN);
+		window.setForeground(Color.GREEN);
 
 		isRunning = true;
 	}
@@ -155,15 +156,22 @@ public abstract class GameCore {
 						g.dispose();
 						screen.update();
 					} break;
-				case MENU:
-					{
-						//DO menu stuff here
-						Graphics2D g = screen.getGraphics();
-						checkMainMenuInput();
-						drawMainMenu(g);
-						g.dispose();
-						screen.update();
-					}
+				case MAIN_MENU: {
+					//DO menu stuff here
+					Graphics2D g = screen.getGraphics();
+					checkMainMenuInput();
+					drawMainMenu(g);
+					g.dispose();
+					screen.update();
+				}break;
+				case OPTION_MENU: {
+					//DO menu stuff here
+					Graphics2D g = screen.getGraphics();
+					checkMainMenuInput();
+					drawOptionMenu(g);
+					g.dispose();
+					screen.update();
+				}break;
 			}
 
 			// don't take a nap! run as fast as possible
@@ -172,6 +180,8 @@ public abstract class GameCore {
 			 */
 		}
 	}
+
+
 
 	/**
 	 * Updates the state of the game/animation based on the amount of elapsed time
@@ -194,5 +204,6 @@ public abstract class GameCore {
 	public abstract void drawGame(Graphics2D g);
 	public abstract void drawGameOverMenu(Graphics2D g);
 	public abstract void drawMainMenu(Graphics2D g);
+	protected abstract void drawOptionMenu(Graphics2D g);
 	public abstract void checkMainMenuInput();
 }
