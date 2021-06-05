@@ -34,8 +34,8 @@ jobs:
       
     - name: Configure Git user
       run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'your-username@users.noreply.github.com'
       
     - name: Publish JAR
       run: mvn -B release:prepare release:perform -s $GITHUB_WORKSPACE/settings.xml
