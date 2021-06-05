@@ -51,28 +51,12 @@ public class Renderer {
         Font font0 = new Font("arial", Font.PLAIN, 25);
         Rectangle welcomeRect = new Rectangle(screenWidth / 2 - 140, screenHeight / 2 - 250, 320, 50);
         Rectangle playBtn = new Rectangle(screenWidth / 2 - 100, screenHeight / 2 - 80, 250, 50);
-        Rectangle optionBtn = new Rectangle(screenWidth / 2 - 100, screenHeight / 2 - 10, 250, 50);
-        Rectangle exitBtn = new Rectangle(screenWidth / 2 - 100, screenHeight / 2 + 70, 250, 50);
+        Rectangle exitBtn = new Rectangle(screenWidth / 2 - 100, screenHeight / 2 - 10, 250, 50);
 
 
-        stringDrawer.drawCenteredString(g, "Welcome To SuperMario", welcomeRect, font0,Color.BLACK);
+        stringDrawer.drawCenteredString(g, "Welcome To Violetio", welcomeRect, font0,Color.BLACK);
         stringDrawer.drawCenteredString(g, "Play (Press Space)", playBtn, font0,Color.RED);
-        stringDrawer.drawCenteredString(g, "Option (Press O)", optionBtn, font0,Color.RED);
         stringDrawer.drawCenteredString(g, "Exit (Press Q)", exitBtn, font0,Color.RED);
-
-    }
-
-    public static void renderOptionMenu(Graphics2D g, int screenWidth, int screenHeight) {
-        //NOTE(Amine): First Try if you have any improvements go ahead
-        //g.fillRect(0,0, screenWidth, screenHeight);
-        Font font0 = new Font("arial", Font.PLAIN, 25);
-
-        Rectangle resolutionRect = new Rectangle(screenWidth / 2 - 140, screenHeight / 2 - 250, 320, 50);
-        Rectangle BackBtn = new Rectangle(screenWidth / 2 + 70, screenHeight / 2 + 230, 300, 50);
-
-
-        stringDrawer.drawCenteredString(g, "Change Your Resolution", resolutionRect, font0,Color.BLACK);
-        stringDrawer.drawCenteredString(g, "Main Menu (Press ESC)", BackBtn, font0,Color.RED);
 
     }
 
@@ -84,7 +68,6 @@ public class Renderer {
         g.setColor(Color.RED);
         g.drawString(String.format("Your score is :  %d", score), screenWidth / 2 - 200, screenHeight / 2 -200);
 
-        //TODO : rendrer some buttons or idk (Done)
         Font font0 = new Font("arial", Font.PLAIN, 25);
         Rectangle GameOver = new Rectangle(screenWidth / 2 -200, screenHeight / 2 -150, 400, 50);
         stringDrawer.drawCenteredString(g, "Game Over , Try Again (Press R) ", GameOver, font0,Color.RED);
@@ -127,7 +110,6 @@ public class Renderer {
         //draw the background if exist
         if (background != null) {
             //parallax effect
-            //TODO(Mouad): add two more layers if there is enough time
             int backgroundWidth = background.getWidth(null);
             int backgroundHeight = background.getHeight(null);
             float scale = (float) screenHeight / backgroundHeight;

@@ -167,8 +167,6 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
 
 	// from the MouseMotionListener interface
 	public synchronized void mouseMoved(MouseEvent e) {
-		//TODO(Mouad): check if we really need this recentring thing
-		// this event is from re-centering the mouse - ignore it
 		if (isRecentering && centerLocation.x == e.getX() && centerLocation.y == e.getY()) {
 			isRecentering = false;
 		} else {

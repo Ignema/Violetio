@@ -31,7 +31,7 @@ public class GameEngine extends GameCore {
 
     private int collectedStars = 0;
 
-    private int realNumLives=10;
+    private int realNumLives = 5;
     private int numLives = realNumLives;
 
     public void init() {
@@ -98,11 +98,6 @@ public class GameEngine extends GameCore {
         Renderer.renderMainMenu(g, screen.getWidth(), screen.getHeight());
     }
 
-    @Override
-    protected void drawOptionMenu(Graphics2D g) {
-        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
-        Renderer.renderOptionMenu(g, screen.getWidth(), screen.getHeight());
-    }
 
     @Override
     public void checkMainMenuInput() {
@@ -114,16 +109,6 @@ public class GameEngine extends GameCore {
         }
         if (keys[KeyEvent.VK_Q]) {
             stop();
-            inputManager.clearKeysState();
-        }
-
-        if (keys[KeyEvent.VK_O]) {
-
-            state = GameState.OPTION_MENU;
-            inputManager.clearKeysState();
-        }
-        if (keys[KeyEvent.VK_ESCAPE] && state == GameState.OPTION_MENU) {
-            state = GameState.MAIN_MENU;
             inputManager.clearKeysState();
         }
         if(keys[KeyEvent.VK_ESCAPE] && state == GameState.GAME_OVER){
@@ -437,7 +422,7 @@ public class GameEngine extends GameCore {
         if (Player.PlayerAnimation.remainingDieTime <= 0) {
             Player.PlayerAnimation.currentFrameIndex = 0;
             state = GameState.GAME_RUNNING;
-            ResourceManager.currentMap = 1;
+            //ResourceManager.currentMap = 1;
             map = ResourceManager.LoadMap();
             return;
         }

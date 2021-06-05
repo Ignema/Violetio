@@ -16,9 +16,10 @@ public abstract class GameCore {
 		GAME_RUNNING,
 		PLAYER_DYING,
 		GAME_OVER,
-		WiningGame, OPTION_MENU
+		WiningGame
 	};
 	protected static final int FONT_SIZE = 18;
+	static private final int FRAME_TARGET = 150;
 
 	private static final DisplayMode POSSIBLE_MODES[] = {
 		new DisplayMode(800, 600, 32, 0),
@@ -111,9 +112,10 @@ public abstract class GameCore {
 		long currTime = startTime;
 		long secondCountdown = 1000;
 		int currentFrameCount = 0;
+		long timePerFrame = 1000 / FRAME_TARGET;
 		while (isRunning) {
 			long elapsedTime = System.currentTimeMillis() - currTime;
-			currTime += elapsedTime;
+			currTime = System.currentTimeMillis();
 			switch (state)
 			{
 				case GAME_RUNNING:
@@ -166,14 +168,6 @@ public abstract class GameCore {
 					g.dispose();
 					screen.update();
 				}break;
-				case OPTION_MENU: {
-					//DO menu stuff here
-					Graphics2D g = screen.getGraphics();
-					checkMainMenuInput();
-					drawOptionMenu(g);
-					g.dispose();
-					screen.update();
-				}break;
 				case WiningGame:{
 					Graphics2D g = screen.getGraphics();
 					checkMainMenuInput();
@@ -182,11 +176,16 @@ public abstract class GameCore {
 					screen.update();
 				}break;
 			}
+			elapsedTime = System.currentTimeMillis() - currTime;
+
 
 			// don't take a nap! run as fast as possible
-			/*
-			 * try { Thread.sleep(20); } catch (InterruptedException ex) { }
-			 */
+			if (timePerFrame > elapsedTime) {
+				try {
+					Thread.sleep(timePerFrame - elapsedTime);
+				} catch (InterruptedException ignored) {
+				}
+			}
 		}
 	}
 
@@ -214,6 +213,5 @@ public abstract class GameCore {
 	public abstract void drawGame(Graphics2D g);
 	public abstract void drawGameOverMenu(Graphics2D g);
 	public abstract void drawMainMenu(Graphics2D g);
-	protected abstract void drawOptionMenu(Graphics2D g);
 	public abstract void checkMainMenuInput();
 }

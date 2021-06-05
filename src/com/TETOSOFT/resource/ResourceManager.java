@@ -190,16 +190,10 @@ public class ResourceManager {
 	 */
 	public static TileMap LoadMap()
 	{
-		if (currentMap > MAP_COUNT){
-			// all levels cleared!!
-			// TODO : WIN condition satisfied, do something about it
-			return null;
-		}
 		ArrayList<String> lines = new ArrayList<String>();
 		int width = 0;
 		int height = 0;
 		int coinCount = 0;
-		int musicCount = 0;
 		int grubCount = 0;
 		int fliesCount = 0;
 		String filename = "maps/map" + currentMap + ".txt";
@@ -211,7 +205,6 @@ public class ResourceManager {
 				for (int i = 0; i < line.length(); ++i){
 					switch(line.charAt(i)){
 						case 'o': coinCount++; break;
-						case '!': musicCount++; break;
 						case '1': grubCount++; break;
 						case '2': fliesCount++; break;
 					}
@@ -239,8 +232,6 @@ public class ResourceManager {
 				else {
 					switch(ch){
 						case 'o': newMap.AddCoin(x,y); break;
-						case '!': //TODO: add music
-								  ;break;
 						case '*': newMap.AddHome(x,y); break;
 						case '1': newMap.AddShroom(x,y); break;
 						case '2': newMap.AddFly(x,y); break;
