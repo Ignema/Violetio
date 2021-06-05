@@ -38,7 +38,7 @@ jobs:
         git config --global user.email 'your-username@users.noreply.github.com'
       
     - name: Publish JAR
-      run: mvn -B release:prepare release:perform -s $GITHUB_WORKSPACE/settings.xml -Dusername=$GITHUB_ACTOR -Dpassword=$GITHUB_TOKEN
+      run: mvn -B release:prepare release:perform -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
