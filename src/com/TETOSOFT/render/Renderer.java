@@ -37,7 +37,7 @@ public class Renderer {
      */
     public static int tilesToPixels(int numTiles) {
         // no real reason to use shifting here.
-        // it's slightly faster, but doesn't add up to much
+        // it's slighty faster, but doesn't add up to much
         // on modern processors.
         return numTiles << TILE_SIZE_BITS;
         // use this if the tile size isn't a power of 2:
@@ -76,13 +76,22 @@ public class Renderer {
 
     }
 
-    public static void renderGameOverMenu(Graphics2D g, int screenWidth, int screenHeight) {
+    public static void renderGameOverMenu(Graphics2D g, int screenWidth, int screenHeight, int score) {
         int alfa = 200;
-        Color customColor = new Color(100, 100, 100, alfa);
+        Color customColor = new Color(0, 0, 0, alfa);
         g.setColor(customColor);
         g.fillRect(0, 0, screenWidth, screenHeight);
         g.setColor(Color.RED);
-        g.drawString("GameOver", screenWidth / 2 - 50, screenHeight / 2 - 10);
+        g.drawString(String.format("Your score is :  %d", score), screenWidth / 2 - 200, screenHeight / 2 -200);
+
+        //TODO : rendrer some buttons or idk (Done)
+        Font font0 = new Font("arial", Font.PLAIN, 25);
+        Rectangle GameOver = new Rectangle(screenWidth / 2 -200, screenHeight / 2 -150, 400, 50);
+        stringDrawer.drawCenteredString(g, "Game Over , Try Again (Press R) ", GameOver, font0,Color.RED);
+        Rectangle BackBtn = new Rectangle(screenWidth / 2 -150, screenHeight / 2 -70, 300, 50);
+        stringDrawer.drawCenteredString(g, "Main Menu (Press ESC)", BackBtn, font0,Color.RED);
+        Rectangle exitBtn = new Rectangle(screenWidth / 2 -125, screenHeight / 2 +10, 250, 50);
+        stringDrawer.drawCenteredString(g, "Exit (Press Q)", exitBtn, font0,Color.RED);
     }
 
     static void renderEnemy(Graphics2D g, Enemy enemy, int screenWorldPositionX, int screenWorldPositionY, int screenWidth, int screenHeight, float newSpeed) {
@@ -187,5 +196,20 @@ public class Renderer {
         g.setColor(Color.WHITE);
         g.drawString("Home: " + ResourceManager.currentMap, 700.0f, 20.0f);
         g.drawString("frames: " + frameCount, 500.f, 40.f);
+    }
+
+    public static void renderWinningGame(Graphics2D g, int screenWidth, int screenHeight, int score) {
+        int alfa = 200;
+        Color customColor = new Color(0, 0, 0, alfa);
+        g.setColor(customColor);
+        g.fillRect(0, 0, screenWidth, screenHeight);
+        g.setColor(Color.RED);
+        g.drawString(String.format("Yayyyy You win, Your score is :  %d", score), screenWidth / 2 - 200, screenHeight / 2 -200);
+
+        Font font0 = new Font("arial", Font.PLAIN, 25);
+        Rectangle BackBtn = new Rectangle(screenWidth / 2 -150, screenHeight / 2 -70, 300, 50);
+        stringDrawer.drawCenteredString(g, "Main Menu (Press ESC)", BackBtn, font0,Color.RED);
+        Rectangle exitBtn = new Rectangle(screenWidth / 2 -125, screenHeight / 2 +10, 250, 50);
+        stringDrawer.drawCenteredString(g, "Exit (Press Q)", exitBtn, font0,Color.RED);
     }
 }
