@@ -53,7 +53,7 @@
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/anassBenhima/projet-agile-super-mario.git</developerConnection>
+        <developerConnection>scm:git:https://anassBenhima/projet-agile-super-mario.git</developerConnection>
     </scm>
 
     <properties>
