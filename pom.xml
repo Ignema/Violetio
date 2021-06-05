@@ -32,6 +32,14 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -53,7 +61,7 @@
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:git:https://anassBenhima/projet-agile-super-mario.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/anassBenhima/projet-agile-super-mario.git</developerConnection>
     </scm>
 
     <properties>
