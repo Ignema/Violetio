@@ -35,7 +35,7 @@ public class GameEngine extends GameCore {
         initInput();
         ResourceManager.gc = screen.getFullScreenWindow().getGraphicsConfiguration();
         ResourceManager.InitImages();
-        Renderer.background = ResourceManager.LoadImage("background.jpg");
+        Renderer.background = ResourceManager.LoadBackground("sky_background.png");
         // load first map
         map = ResourceManager.LoadMap();
         state = GameState.MAIN_MENU;

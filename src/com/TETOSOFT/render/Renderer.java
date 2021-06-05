@@ -37,7 +37,7 @@ public class Renderer {
      */
     public static int tilesToPixels(int numTiles) {
         // no real reason to use shifting here.
-        // it's slighty faster, but doesn't add up to much
+        // it's slightly faster, but doesn't add up to much
         // on modern processors.
         return numTiles << TILE_SIZE_BITS;
         // use this if the tile size isn't a power of 2:
@@ -83,12 +83,12 @@ public class Renderer {
         g.fillRect(0, 0, screenWidth, screenHeight);
         g.setColor(Color.RED);
         g.drawString("GameOver", screenWidth / 2 - 50, screenHeight / 2 - 10);
-        //TODO : rendrer some buttons or idk
+        //TODO : renderer some buttons or idk
     }
 
-    static void renderEnemy(Graphics2D g, Enemy enemy, int screenWolrdPositionX, int screenWolrdPositionY, int screenWidth, int screenHeight, float newSpeed) {
-        int enemyScreenX = Math.round(enemy.x) - screenWolrdPositionX;
-        int enemyScreenY = Math.round(enemy.y) - screenWolrdPositionY;
+    static void renderEnemy(Graphics2D g, Enemy enemy, int screenWorldPositionX, int screenWorldPositionY, int screenWidth, int screenHeight, float newSpeed) {
+        int enemyScreenX = Math.round(enemy.x) - screenWorldPositionX;
+        int enemyScreenY = Math.round(enemy.y) - screenWorldPositionY;
 
         if (enemyScreenX + enemy.getWidth() >= 0 && enemyScreenX <= screenWidth
                 && enemyScreenY + enemy.getHeight() >= 0 && enemyScreenY <= screenHeight) {
@@ -104,36 +104,47 @@ public class Renderer {
     }
 
     public static void renderMap(Graphics2D g, TileMap map, int screenWidth, int screenHeight) {
-        //draw the background if exist
-        if (background != null) {
-            int backgroundWidth = background.getWidth(null);
-            int backgroundHeight = background.getHeight(null);
-            int backgroundX = (screenWidth - backgroundWidth) / 2;
-            int backgroundY = (screenHeight - backgroundHeight) / 2;
-            g.drawImage(background, backgroundX, backgroundY, null);
-        } else {
-            g.setColor(Color.black);
-            g.fillRect(0, 0, screenWidth, screenHeight);
-        }
         Player player = map.player;
         int mapWidth = map.getWidth();
         int mapHeight = map.getHeight();
         int mapWorldWidth = tilesToPixels(mapWidth);
         int mapWorldHeight = tilesToPixels(mapHeight);
         //NOTE(Mouad): player should be always in the middle of the screen if there is a room for it
-        int screenWolrdPositionX = Math.round(player.x) - (screenWidth / 2);
-        int screenWolrdPositionY = Math.round(player.y) - (screenHeight / 2);
-        screenWolrdPositionX = Math.max(0, screenWolrdPositionX);
-        screenWolrdPositionX = Math.min(screenWolrdPositionX, mapWorldWidth - screenWidth);
-        screenWolrdPositionY = Math.max(0, screenWolrdPositionY);
-        screenWolrdPositionY = Math.min(screenWolrdPositionY, mapWorldHeight - screenHeight);
+        // NOTE(Mouad): screenWorldPosition is the position of the screen in the game world
+        int screenWorldPositionX = Math.round(player.x) - (screenWidth / 2);
+        int screenWorldPositionY = Math.round(player.y) - (screenHeight / 2);
+        screenWorldPositionX = Math.max(0, screenWorldPositionX);
+        screenWorldPositionX = Math.min(screenWorldPositionX, mapWorldWidth - screenWidth);
+        screenWorldPositionY = Math.max(0, screenWorldPositionY);
+        screenWorldPositionY = Math.min(screenWorldPositionY, mapWorldHeight - screenHeight);
+        //draw the background if exist
+        if (background != null) {
+            //parallax effect
+            //TODO(Mouad): add two more layers if there is enough time
+            int backgroundWidth = background.getWidth(null);
+            int backgroundHeight = background.getHeight(null);
+            float scale = (float) screenHeight / backgroundHeight;
+            backgroundWidth *= scale;
+            //make the background move slower
+            int backgroundWorldPositionX = (int) (screenWorldPositionX * -0.5);
+            backgroundWorldPositionX %= backgroundWidth;
+            g.drawImage(background, backgroundWorldPositionX,0,backgroundWidth, screenHeight, null);
+            if (backgroundWorldPositionX + backgroundWidth < screenWorldPositionX + screenWidth)
+            {
+                g.drawImage(background, backgroundWorldPositionX + backgroundWidth,0,backgroundWidth, screenHeight, null);
+            }
+        } else {
+            g.setColor(Color.black);
+            g.fillRect(0, 0, screenWidth, screenHeight);
+        }
+
         //draw tiles
         for (int i = 0; i < mapHeight; ++i) {
             int tileWorldY = tilesToPixels(i);
             for (int j = 0; j < mapWidth; ++j) {
                 int tileWorldX = tilesToPixels(j);
-                int tileScreenX = tileWorldX - screenWolrdPositionX;
-                int tileScreenY = tileWorldY - screenWolrdPositionY;
+                int tileScreenX = tileWorldX - screenWorldPositionX;
+                int tileScreenY = tileWorldY - screenWorldPositionY;
                 if (tileScreenX + TILE_SIZE >= 0 && tileScreenX <= screenWidth
                         && tileScreenY + TILE_SIZE >= 0 && tileScreenY <= screenHeight)
                     g.drawImage(map.tiles[i][j], tileScreenX, tileScreenY, TILE_SIZE, TILE_SIZE, null);
@@ -142,26 +153,26 @@ public class Renderer {
         //draw coins
         for (int i = 0; i < map.remainingCoins; ++i) {
             PowerUp coin = map.coins[i];
-            int coinScreenX = Math.round(coin.x) - screenWolrdPositionX;
-            int coinScreenY = Math.round(coin.y) - screenWolrdPositionY;
+            int coinScreenX = Math.round(coin.x) - screenWorldPositionX;
+            int coinScreenY = Math.round(coin.y) - screenWorldPositionY;
             g.drawImage(coin.getImage(), coinScreenX, coinScreenY, null);
         }
         //draw alive and dying grubs
         for (int i = 0; i < map.aliveGrubs + map.dyingGrubs; ++i) {
-            renderEnemy(g, map.grubs[i], screenWolrdPositionX, screenWolrdPositionY, screenWidth, screenHeight, Enemy.max_grub_dx);
+            renderEnemy(g, map.grubs[i], screenWorldPositionX, screenWorldPositionY, screenWidth, screenHeight, Enemy.max_grub_dx);
         }
         //draw alive and dying fly
         for (int i = 0; i < map.aliveFlies + map.dyingFlies; ++i) {
-            renderEnemy(g, map.flies[i], screenWolrdPositionX, screenWolrdPositionY, screenWidth, screenHeight, Enemy.max_fly_dx);
+            renderEnemy(g, map.flies[i], screenWorldPositionX, screenWorldPositionY, screenWidth, screenHeight, Enemy.max_fly_dx);
         }
         //draw home
         PowerUp home = map.home;
-        int homeScreenX = Math.round(home.x) - screenWolrdPositionX;
-        int homeScreenY = Math.round(home.y) - screenWolrdPositionY;
+        int homeScreenX = Math.round(home.x) - screenWorldPositionX;
+        int homeScreenY = Math.round(home.y) - screenWorldPositionY;
         g.drawImage(home.getImage(), homeScreenX, homeScreenY, null);
         // draw player
-        int playerScreenX = Math.round(player.x) - screenWolrdPositionX;
-        int playerScreenY = Math.round(player.y) - screenWolrdPositionY;
+        int playerScreenX = Math.round(player.x) - screenWorldPositionX;
+        int playerScreenY = Math.round(player.y) - screenWorldPositionY;
         g.drawImage(player.getImage(),
                 playerScreenX, playerScreenY,playerScreenX + player.getWidth(),playerScreenY+ player.getHeight(),
                 0,0, player.getWidth(), player.getHeight(),

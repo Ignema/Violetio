@@ -29,6 +29,12 @@ public class ResourceManager {
 		return getScaledImage(image, 1, -1);
 	}
 
+	public static Image LoadBackground(String name)
+	{
+		String filename = "Assets/backgrounds/" + name;
+		return new ImageIcon(filename).getImage();
+	}
+
 	private static Image getScaledImage(Image image, float x, float y) {
 		// set up the transform
 		AffineTransform transform = new AffineTransform();
