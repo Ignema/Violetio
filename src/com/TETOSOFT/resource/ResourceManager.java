@@ -14,7 +14,7 @@ public class ResourceManager {
 	public static int MAP_COUNT = 4;
 	public static GraphicsConfiguration gc;
 	public static Image[] tiles;
-	public static int tileImagesCount = 9;
+	public static int tileImagesCount = 'K' - 'A' + 1;
 
 	public static Image LoadImage(String name){
 		String filename = "images/" + name;
@@ -53,15 +53,18 @@ public class ResourceManager {
 
 	public static void InitImages(){
 		//load player images
-		//TODO: add more animation
 		int playerIdleFrameCount = 8;
+		int playerDyingFrameCount = 13;
+		int playerMovingFrameCount = 14;
 		//NOTE: player will have fixed size
 		Player.width = 40;
 		Player.height = 80;
 		Player.PlayerAnimation.idleLeftFrames = new Image[playerIdleFrameCount];
 		Player.PlayerAnimation.idleRightFrames = new Image[playerIdleFrameCount];
-		Player.PlayerAnimation.dyingLeftFrames = new Image[1];
-		Player.PlayerAnimation.dyingRightFrames = new Image[1];
+		Player.PlayerAnimation.dyingLeftFrames = new Image[playerDyingFrameCount];
+		Player.PlayerAnimation.dyingRightFrames = new Image[playerDyingFrameCount];
+		Player.PlayerAnimation.movingLeftFrames = new Image[playerMovingFrameCount];
+		Player.PlayerAnimation.movingRightFrames = new Image[playerMovingFrameCount];
 		for (int frame = 0; frame < playerIdleFrameCount; ++frame)
 		{
 			String fileName = "Assets/player/idle/" + (frame + 1) + ".png";
@@ -75,15 +78,39 @@ public class ResourceManager {
 			Player.PlayerAnimation.idleRightFrames[frame] = newImage; 
 			Player.PlayerAnimation.idleLeftFrames[frame] =getMirrorImage(newImage);
 		}
-		//TODO(Mouad): change animation frames images when available
-		Player.PlayerAnimation.dyingLeftFrames[0] = getFlippedImage(Player.PlayerAnimation.idleLeftFrames[0]);
-		Player.PlayerAnimation.dyingRightFrames[0] = getFlippedImage(Player.PlayerAnimation.idleRightFrames[0]);
+		//Dying animation
+		for (int frame = 0; frame < playerDyingFrameCount; ++frame)
+		{
+			String fileName = "Assets/player/death/" + (frame + 1) + ".png";
+
+			Image playerImage = new ImageIcon(fileName).getImage();
+			Image newImage = gc.createCompatibleImage(Player.width, Player.height,Transparency.BITMASK);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.drawImage(playerImage, 0,0, Player.width,Player.height, null);
+			g.dispose();
+
+			Player.PlayerAnimation.dyingRightFrames[frame] = newImage;
+			Player.PlayerAnimation.dyingLeftFrames[frame] =getMirrorImage(newImage);
+		}
+		Player.PlayerAnimation.DIE_TIME = Player.PlayerAnimation.frameDuration * playerDyingFrameCount;
+
+		//Moving animation
+		for (int frame = 0; frame < playerMovingFrameCount; ++frame)
+		{
+			String fileName = "Assets/player/walk/" + (frame + 1) + ".png";
+
+			Image playerImage = new ImageIcon(fileName).getImage();
+			Image newImage = gc.createCompatibleImage(Player.width, Player.height,Transparency.BITMASK);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.drawImage(playerImage, 0,0, Player.width,Player.height, null);
+			g.dispose();
+
+			Player.PlayerAnimation.movingRightFrames[frame] = newImage;
+			Player.PlayerAnimation.movingLeftFrames[frame] =getMirrorImage(newImage);
+		}
 		Player.PlayerAnimation.jumpingLeftFrames = Player.PlayerAnimation.idleLeftFrames;
 		Player.PlayerAnimation.jumpingRightFrames = Player.PlayerAnimation.idleRightFrames;
-		Player.PlayerAnimation.movingLeftFrames = Player.PlayerAnimation.idleLeftFrames;
-		Player.PlayerAnimation.movingRightFrames = Player.PlayerAnimation.idleRightFrames;
 		//load grub images
-		//TODO(Mouad): change the name of the grub enemy to shrooms
 		int shroomsMovingFrameCount = 6;
 		Enemy.EnemyAnimation.shroomMovingLeftFrames = new Image[shroomsMovingFrameCount];
 		for (int frame = 0; frame < shroomsMovingFrameCount; ++frame)
@@ -129,21 +156,28 @@ public class ResourceManager {
 				getFlippedImage(Enemy.EnemyAnimation.flyMovingRightFrames[i]);
 		}
 		//load coin images
-		PowerUp.PowerUpAnimation.coinFrames = new Image[] {
-			LoadImage("coin1.png"),
-			LoadImage("coin2.png"),
-			LoadImage("coin3.png"),
-			LoadImage("coin4.png"),
-			LoadImage("coin5.png"),
-		};
+		int coinCount = 4;
+		PowerUp.PowerUpAnimation.coinFrames = new Image[coinCount];
+		for (int coin = 0; coin < coinCount; ++coin)
+		{
+			String fileName = "images/coin" + (coin + 1) + ".png";
+			Image coinImage = new ImageIcon(fileName).getImage();
+			int width  = 40;
+			int height = 40;
+			Image newImage = gc.createCompatibleImage(width, height,Transparency.BITMASK);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.drawImage(coinImage, 0,0, width,height, null);
+			g.dispose();
+
+			PowerUp.PowerUpAnimation.coinFrames[coin] = newImage;
+		}
 		//load home image
 		PowerUp.PowerUpAnimation.homeFrames = new Image[] {
 			LoadImage("heart.png"),
 		};
 		//load tiles images
-		int tileSize ='I' - 'A' + 1;
-		tiles = new Image[tileSize];
-		for (char ch = 'A'; ch <= 'I'; ++ch){
+		tiles = new Image[tileImagesCount];
+		for (char ch = 'A'; ch <= 'K'; ++ch){
 			String name = ch + ".png";
 			tiles[ch - 'A'] = LoadImage(name);
 		}

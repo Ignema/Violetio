@@ -67,12 +67,20 @@ public class GameEngine extends GameCore {
                 player.moveLeft();
             }
         }
+        else if (Player.PlayerAnimation.currentFrames == Player.PlayerAnimation.movingLeftFrames) {
+                player.idle();
+        }
+
         if (keys[KeyEvent.VK_RIGHT]) {
             velocityX += player.max_dx;
             if (Player.PlayerAnimation.currentFrames != Player.PlayerAnimation.movingRightFrames) {
                 player.moveRight();
             }
         }
+        else if (Player.PlayerAnimation.currentFrames == Player.PlayerAnimation.movingRightFrames) {
+                player.idle();
+        }
+
         if (keys[KeyEvent.VK_SPACE]) {
             player.jump();
         }
@@ -81,11 +89,13 @@ public class GameEngine extends GameCore {
 
 
     public void drawMainMenu(Graphics2D g) {
+        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
         Renderer.renderMainMenu(g, screen.getWidth(), screen.getHeight());
     }
 
     @Override
     protected void drawOptionMenu(Graphics2D g) {
+        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
         Renderer.renderOptionMenu(g, screen.getWidth(), screen.getHeight());
     }
 
@@ -385,7 +395,9 @@ public class GameEngine extends GameCore {
         Player player = map.player;
         Player.PlayerAnimation.remainingDieTime -= elapsedTime;
         if (Player.PlayerAnimation.remainingDieTime <= 0) {
+            Player.PlayerAnimation.currentFrameIndex = 0;
             state = GameState.GAME_RUNNING;
+            ResourceManager.currentMap = 1;
             map = ResourceManager.LoadMap();
             return;
         }

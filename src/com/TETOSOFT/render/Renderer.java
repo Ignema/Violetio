@@ -83,7 +83,6 @@ public class Renderer {
         g.fillRect(0, 0, screenWidth, screenHeight);
         g.setColor(Color.RED);
         g.drawString("GameOver", screenWidth / 2 - 50, screenHeight / 2 - 10);
-        //TODO : renderer some buttons or idk
     }
 
     static void renderEnemy(Graphics2D g, Enemy enemy, int screenWorldPositionX, int screenWorldPositionY, int screenWidth, int screenHeight, float newSpeed) {
@@ -95,7 +94,6 @@ public class Renderer {
             //draw only if visible
             g.drawImage(enemy.getImage(), enemyScreenX, enemyScreenY, null);
             g.setColor(Color.BLUE);
-            g.drawRect(enemyScreenX, enemyScreenY, enemy.getWidth(), enemy.getHeight());
             if (enemy.dx == 0) {
                 //wake up
                 enemy.dx = newSpeed;
@@ -177,11 +175,6 @@ public class Renderer {
                 playerScreenX, playerScreenY,playerScreenX + player.getWidth(),playerScreenY+ player.getHeight(),
                 0,0, player.getWidth(), player.getHeight(),
                 null);
-        // TODO(Mouad): for debug only, remove them when done
-        g.setColor(Color.RED);
-        g.drawRect(playerScreenX, playerScreenY, player.getWidth(), player.weakSpotHeight);
-        g.setColor(Color.GREEN);
-        g.drawRect(playerScreenX, playerScreenY + player.weakSpotHeight, player.getWidth(), player.getHeight() - player.weakSpotHeight);
     }
 
     public static void renderHUD(Graphics2D g, int collectedStars, int numLives, int frameCount) {

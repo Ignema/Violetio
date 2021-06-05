@@ -28,7 +28,7 @@ public class Player {
 		static public Image[] dyingLeftFrames;
 		static public Image[] dyingRightFrames;
 		static public Image[] currentFrames;
-		static public long frameDuration = 125;
+		static public long frameDuration = 100;
 		static public long currentFrameDuration;
 		static public int currentFrameIndex = 0;
 		static public long remainingDieTime;
@@ -36,6 +36,7 @@ public class Player {
 	}
 
 	public void jump(){
+		if (dy != 0) jumping = true;
 		if (!jumping) {
 			jumping = true;
 			ForceJump();
@@ -45,6 +46,7 @@ public class Player {
 	public void ForceJump(){
 		jumping = true;
 		dy = max_dy;
+		PlayerAnimation.currentFrameIndex = 0;
 		if (PlayerAnimation.currentFrames == PlayerAnimation.movingRightFrames ||
 			PlayerAnimation.currentFrames == PlayerAnimation.idleRightFrames
 		   )
@@ -128,6 +130,21 @@ public class Player {
 		}
 		else{
 			PlayerAnimation.currentFrames = PlayerAnimation.dyingLeftFrames;
+		}
+	}
+	public void idle()
+	{
+		if (PlayerAnimation.currentFrames == PlayerAnimation.movingLeftFrames||
+			PlayerAnimation.currentFrames == PlayerAnimation.jumpingLeftFrames)
+		{
+			PlayerAnimation.currentFrameIndex = 0;
+			PlayerAnimation.currentFrames = PlayerAnimation.idleLeftFrames;
+		}
+		else if(PlayerAnimation.currentFrames == PlayerAnimation.movingRightFrames||
+				PlayerAnimation.currentFrames == PlayerAnimation.jumpingRightFrames)
+		{
+			PlayerAnimation.currentFrameIndex = 0;
+			PlayerAnimation.currentFrames = PlayerAnimation.idleRightFrames;
 		}
 	}
 }
