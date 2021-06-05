@@ -65,19 +65,17 @@ public class ResourceManager {
 		for (int frame = 0; frame < playerIdleFrameCount; ++frame)
 		{
 			String fileName = "Assets/player/idle/" + (frame + 1) + ".png";
+
 			Image playerImage = new ImageIcon(fileName).getImage();
-			Image newImage = gc.createCompatibleImage(Player.width, Player.height);
+			Image newImage = gc.createCompatibleImage(Player.width, Player.height,Transparency.BITMASK);
 			Graphics2D g = (Graphics2D) newImage.getGraphics();
 			g.drawImage(playerImage, 0,0, Player.width,Player.height, null);
 			g.dispose();
 
-			Image playerIdleRight = newImage;
-			Image playerIdleLeft = getMirrorImage(playerIdleRight);
-
-			Player.PlayerAnimation.idleLeftFrames[frame] = playerIdleLeft;
-			Player.PlayerAnimation.idleRightFrames[frame] = getMirrorImage(playerIdleLeft);
+			Player.PlayerAnimation.idleRightFrames[frame] = newImage; 
+			Player.PlayerAnimation.idleLeftFrames[frame] =getMirrorImage(newImage);
 		}
-
+		//TODO(Mouad): change animation frames images when available
 		Player.PlayerAnimation.dyingLeftFrames[0] = getFlippedImage(Player.PlayerAnimation.idleLeftFrames[0]);
 		Player.PlayerAnimation.dyingRightFrames[0] = getFlippedImage(Player.PlayerAnimation.idleRightFrames[0]);
 		Player.PlayerAnimation.jumpingLeftFrames = Player.PlayerAnimation.idleLeftFrames;
@@ -85,21 +83,33 @@ public class ResourceManager {
 		Player.PlayerAnimation.movingLeftFrames = Player.PlayerAnimation.idleLeftFrames;
 		Player.PlayerAnimation.movingRightFrames = Player.PlayerAnimation.idleRightFrames;
 		//load grub images
-		Enemy.EnemyAnimation.grubMovingLeftFrames = new Image[] {
-			LoadImage("grub1.png"),
-			LoadImage("grub2.png")
-		};
-		int grubAnimSize = Enemy.EnemyAnimation.grubMovingLeftFrames.length;
-		Enemy.EnemyAnimation.grubMovingRightFrames = new Image[grubAnimSize];
-		Enemy.EnemyAnimation.grubDyingLeftFrames = new Image[grubAnimSize];
-		Enemy.EnemyAnimation.grubDyingRightFrames = new Image[grubAnimSize];
-		for (int i = 0; i < grubAnimSize; ++i){
-			Enemy.EnemyAnimation.grubMovingRightFrames[i] =
-				getMirrorImage(Enemy.EnemyAnimation.grubMovingLeftFrames[i]);
-			Enemy.EnemyAnimation.grubDyingLeftFrames[i] =
-				getFlippedImage(Enemy.EnemyAnimation.grubMovingLeftFrames[i]);
-			Enemy.EnemyAnimation.grubDyingRightFrames[i] =
-				getFlippedImage(Enemy.EnemyAnimation.grubMovingRightFrames[i]);
+		//TODO(Mouad): change the name of the grub enemy to shrooms
+		int shroomsMovingFrameCount = 6;
+		Enemy.EnemyAnimation.shroomMovingLeftFrames = new Image[shroomsMovingFrameCount];
+		for (int frame = 0; frame < shroomsMovingFrameCount; ++frame)
+		{
+			String fileName = "Assets/enemies/Shroom/blue/" + (frame + 1) + ".png";
+			Image shroomImage = new ImageIcon(fileName).getImage();
+			int width  = 50;
+			int height = 50;
+			Image newImage = gc.createCompatibleImage(width, height,Transparency.BITMASK);
+			Graphics2D g = (Graphics2D) newImage.getGraphics();
+			g.drawImage(shroomImage, 0,0, width,height, null);
+			g.dispose();
+
+			Enemy.EnemyAnimation.shroomMovingLeftFrames[frame] = newImage;
+		}
+
+		Enemy.EnemyAnimation.shroomMovingRightFrames = new Image[shroomsMovingFrameCount];
+		Enemy.EnemyAnimation.shroomDyingLeftFrames = new Image[shroomsMovingFrameCount];
+		Enemy.EnemyAnimation.shroomDyingRightFrames = new Image[shroomsMovingFrameCount];
+		for (int i = 0; i < shroomsMovingFrameCount; ++i){
+			Enemy.EnemyAnimation.shroomMovingRightFrames[i] =
+				getMirrorImage(Enemy.EnemyAnimation.shroomMovingLeftFrames[i]);
+			Enemy.EnemyAnimation.shroomDyingLeftFrames[i] =
+				getFlippedImage(Enemy.EnemyAnimation.shroomMovingLeftFrames[i]);
+			Enemy.EnemyAnimation.shroomDyingRightFrames[i] =
+				getFlippedImage(Enemy.EnemyAnimation.shroomMovingRightFrames[i]);
 		}
 		//load fly images
 		Enemy.EnemyAnimation.flyMovingLeftFrames = new Image[] {
@@ -198,7 +208,7 @@ public class ResourceManager {
 						case '!': //TODO: add music
 								  ;break;
 						case '*': newMap.AddHome(x,y); break;
-						case '1': newMap.AddGrub(x,y); break;
+						case '1': newMap.AddShroom(x,y); break;
 						case '2': newMap.AddFly(x,y); break;
 					}
 				}

@@ -207,7 +207,7 @@ public class GameEngine extends GameCore {
     void updateAliveGrub(Enemy grub, long elapsedTime) {
         //apply gravity
         grub.dy += GRAVITY * elapsedTime;
-        ChangeEnemyHorizontalDirection(grub, elapsedTime, Enemy.EnemyAnimation.grubMovingLeftFrames, Enemy.EnemyAnimation.grubMovingRightFrames);
+        ChangeEnemyHorizontalDirection(grub, elapsedTime, Enemy.EnemyAnimation.shroomMovingLeftFrames, Enemy.EnemyAnimation.shroomMovingRightFrames);
         ChangeEnemyY(grub, elapsedTime);
         //update animation
         grub.update(elapsedTime);
@@ -237,8 +237,8 @@ public class GameEngine extends GameCore {
             }
         }
         //check if collided with an alive grub
-        for (int i = 0; i < map.aliveGrubs; ++i) {
-            Enemy grub = map.grubs[i];
+        for (int i = 0; i < map.aliveShrooms; ++i) {
+            Enemy grub = map.shrooms[i];
             if (player.x + player.getWidth() >= grub.x
                     && grub.x + grub.getWidth() >= player.x
                     && player.y + player.getHeight() >= grub.y
@@ -255,7 +255,7 @@ public class GameEngine extends GameCore {
                     }
                 } else {
                     //player kills grub
-                    map.killGrub(i);
+                    map.killShroom(i);
                     player.ForceJump();
                 }
                 return true;
@@ -412,8 +412,8 @@ public class GameEngine extends GameCore {
         //NOTE(Mouad): we update the position and then we check for any collision with tiles,
         //we also update the animation
         //update living grubs
-        for (int i = 0; i < map.aliveGrubs; ++i) {
-            updateAliveGrub(map.grubs[i], elapsedTime);
+        for (int i = 0; i < map.aliveShrooms; ++i) {
+            updateAliveGrub(map.shrooms[i], elapsedTime);
         }
         //update living flies
         for (int i = 0; i < map.aliveFlies; ++i) {
@@ -428,11 +428,11 @@ public class GameEngine extends GameCore {
                 i++;
             }
         }
-        for (int i = map.aliveGrubs; i < map.aliveGrubs + map.dyingGrubs; ) {
+        for (int i = map.aliveShrooms; i < map.aliveShrooms + map.dyingShrooms; ) {
             //NOTE(Mouad): dying grubs are always on ground, so no need to apply gravity
             // or check for collision with the tiles
-            if (updateDyingGrub(map.grubs[i], elapsedTime)) {
-                map.grubDied(i);
+            if (updateDyingGrub(map.shrooms[i], elapsedTime)) {
+                map.shroomDied(i);
             } else {
                 i++;
             }

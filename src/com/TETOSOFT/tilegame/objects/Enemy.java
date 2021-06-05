@@ -8,21 +8,23 @@ public class Enemy {
 	public float x,y;
 	// velocity
 	public float dx,dy = 0;
-	public static float max_grub_dx = -0.05f;
+	public static float max_shroom_dx = -0.05f;
 	public static float max_fly_dx = -0.1f;
 	//animation
 	public EnemyAnimation animation;
 
 	public static class EnemyAnimation
 	{
+		//fly animation
 		static public Image[] flyMovingRightFrames;
 		static public Image[] flyMovingLeftFrames;
 		static public Image[] flyDyingRightFrames;
 		static public Image[] flyDyingLeftFrames;
-		static public Image[] grubMovingRightFrames;
-		static public Image[] grubMovingLeftFrames;
-		static public Image[] grubDyingRightFrames;
-		static public Image[] grubDyingLeftFrames;
+		//grub animation
+		static public Image[] shroomMovingRightFrames;
+		static public Image[] shroomMovingLeftFrames;
+		static public Image[] shroomDyingRightFrames;
+		static public Image[] shroomDyingLeftFrames;
 		// NOTE(Mouad): will always point to the right frame to draw from
 		public Image[] currentFrames;
 		static public long DIE_TIME = 1000;
@@ -48,13 +50,13 @@ public class Enemy {
 		return animation.currentFrames[animation.currentFrameIndex];
 	}
 
-	public static Enemy getGrub(int x, int y){
-		Enemy grub = createEnemy(x, y + 1);
-		grub.animation.frameDuration = 250;
-		grub.animation.currentFrames = EnemyAnimation.grubMovingLeftFrames;
-		grub.x = grub.x - grub.getWidth() / 2;
-		grub.y -= grub.getHeight();
-		return grub;
+	public static Enemy getShroom(int x, int y){
+		Enemy shroom = createEnemy(x, y + 1);
+		shroom.animation.frameDuration = 250;
+		shroom.animation.currentFrames = EnemyAnimation.shroomMovingLeftFrames;
+		shroom.x = shroom.x - shroom.getWidth() / 2;
+		shroom.y -= shroom.getHeight();
+		return shroom;
 	}
 
 	public static Enemy getFly(int x, int y){

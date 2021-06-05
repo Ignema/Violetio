@@ -14,13 +14,13 @@ import com.TETOSOFT.render.*;
 public class TileMap {
 
 	public Player player;
-	public Enemy[] grubs;
+	public Enemy[] shrooms;
 	public Enemy[] flies;
 	public PowerUp[] coins;
 	public PowerUp home;
 
-	public int aliveGrubs = 0;
-	public int dyingGrubs = 0;
+	public int aliveShrooms = 0;
+	public int dyingShrooms = 0;
 	public int aliveFlies = 0;
 	public int dyingFlies = 0;
 	public int remainingCoins = 0;
@@ -31,17 +31,17 @@ public class TileMap {
 	 * Creates a new TileMap with the specified width and height (in number of
 	 * tiles) of the map.
 	 */
-	public TileMap(int width, int height, int grubCount, int flyCount, int coinCount) {
+	public TileMap(int width, int height, int shroomCount, int flyCount, int coinCount) {
 		tiles = new Image[height][width];
 		flies = new Enemy[flyCount];
-		grubs = new Enemy[grubCount];
+		shrooms = new Enemy[shroomCount];
 		coins = new PowerUp[coinCount];
 		AddPlayer();
 	}
 
-	//TODO(Mouad): adjust initial position
-	public void AddGrub(int x, int y){
-		grubs[aliveGrubs++] = Enemy.getGrub(x,y);
+
+	public void AddShroom(int x, int y){
+		shrooms[aliveShrooms++] = Enemy.getShroom(x,y);
 	}
 
 	public void AddFly(int x, int y){
@@ -88,19 +88,19 @@ public class TileMap {
 	* this function is called when an alive grub is dying
 	* @param grubIndex
 	 */
-	public void killGrub(int grubIndex){
-		aliveGrubs--;
-		dyingGrubs++;
-		Enemy tmpGrub = grubs[grubIndex];
-		grubs[grubIndex] = grubs[aliveGrubs];
-		grubs[aliveGrubs] = tmpGrub;
+	public void killShroom(int grubIndex){
+		aliveShrooms--;
+		dyingShrooms++;
+		Enemy tmpGrub = shrooms[grubIndex];
+		shrooms[grubIndex] = shrooms[aliveShrooms];
+		shrooms[aliveShrooms] = tmpGrub;
 		tmpGrub.animation.remainingDieTime = Enemy.EnemyAnimation.DIE_TIME;
 		//update grub animation
-		if (tmpGrub.animation.currentFrames == Enemy.EnemyAnimation.grubMovingLeftFrames){
-			tmpGrub.animation.currentFrames = Enemy.EnemyAnimation.grubDyingLeftFrames;
+		if (tmpGrub.animation.currentFrames == Enemy.EnemyAnimation.shroomMovingLeftFrames){
+			tmpGrub.animation.currentFrames = Enemy.EnemyAnimation.shroomDyingLeftFrames;
 		}
 		else{
-			tmpGrub.animation.currentFrames = Enemy.EnemyAnimation.grubDyingRightFrames;
+			tmpGrub.animation.currentFrames = Enemy.EnemyAnimation.shroomDyingRightFrames;
 		}
 	}
 
@@ -120,12 +120,12 @@ public class TileMap {
 	* this function is called when a dying grub finally died
 	* @param grubIndex
 	 */
-	public void grubDied(int grubIndex){
-		dyingGrubs--;
-		Enemy tmpGrub = grubs[grubIndex];
-		int lastDyingGrubIndx = aliveGrubs + dyingGrubs;
-		grubs[grubIndex] = grubs[lastDyingGrubIndx];
-		grubs[lastDyingGrubIndx] = tmpGrub;
+	public void shroomDied(int grubIndex){
+		dyingShrooms--;
+		Enemy tmpGrub = shrooms[grubIndex];
+		int lastDyingGrubIndx = aliveShrooms + dyingShrooms;
+		shrooms[grubIndex] = shrooms[lastDyingGrubIndx];
+		shrooms[lastDyingGrubIndx] = tmpGrub;
 	}
 
 	public void collectCoin(int coinIndex){

@@ -158,8 +158,8 @@ public class Renderer {
             g.drawImage(coin.getImage(), coinScreenX, coinScreenY, null);
         }
         //draw alive and dying grubs
-        for (int i = 0; i < map.aliveGrubs + map.dyingGrubs; ++i) {
-            renderEnemy(g, map.grubs[i], screenWorldPositionX, screenWorldPositionY, screenWidth, screenHeight, Enemy.max_grub_dx);
+        for (int i = 0; i < map.aliveShrooms + map.dyingShrooms; ++i) {
+            renderEnemy(g, map.shrooms[i], screenWorldPositionX, screenWorldPositionY, screenWidth, screenHeight, Enemy.max_shroom_dx);
         }
         //draw alive and dying fly
         for (int i = 0; i < map.aliveFlies + map.dyingFlies; ++i) {
