@@ -40,8 +40,10 @@ jobs:
     - name: Java Maven release
       uses: qcastel/github-actions-maven-release@v1.12.12
       with:
-        access-token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+        access-token: ${{ github.token }}
         release-branch-name: "main"
+      env:
+        JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
