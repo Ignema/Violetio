@@ -11,6 +11,9 @@ import com.TETOSOFT.tilegame.objects.PowerUp;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+import static com.TETOSOFT.resource.ResourceManager.MAP_COUNT;
+import static com.TETOSOFT.resource.ResourceManager.currentMap;
+
 
 /**
  * GameManager manages all parts of the game.
@@ -28,11 +31,7 @@ public class GameEngine extends GameCore {
 
     private int collectedStars = 0;
 
-    public int getCollectedStars() {
-        return collectedStars;
-    }
-
-    private int realNumLives=2;
+    private int realNumLives=10;
     private int numLives = realNumLives;
 
     public void init() {
@@ -87,11 +86,13 @@ public class GameEngine extends GameCore {
 
 
     public void drawMainMenu(Graphics2D g) {
+        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
         Renderer.renderMainMenu(g, screen.getWidth(), screen.getHeight());
     }
 
     @Override
     protected void drawOptionMenu(Graphics2D g) {
+        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
         Renderer.renderOptionMenu(g, screen.getWidth(), screen.getHeight());
     }
 
@@ -122,6 +123,7 @@ public class GameEngine extends GameCore {
             state = GameState.MAIN_MENU;
             numLives=realNumLives;
             collectedStars=0;
+            ResourceManager.currentMap=1;
             map = ResourceManager.LoadMap();
             inputManager.clearKeysState();
         }
@@ -129,9 +131,22 @@ public class GameEngine extends GameCore {
             state = GameState.GAME_RUNNING;
             numLives=realNumLives;
             collectedStars=0;
+            ResourceManager.currentMap=1;
             map = ResourceManager.LoadMap();
             inputManager.clearKeysState();
         }
+        if(keys[KeyEvent.VK_ESCAPE] && state == GameState.WiningGame){
+            state = GameState.MAIN_MENU;
+            numLives=realNumLives;
+            collectedStars=0;
+            ResourceManager.currentMap=1;
+            map = ResourceManager.LoadMap();
+            inputManager.clearKeysState();
+        }
+    }
+    public void drawWinningGame(Graphics2D g){
+        Renderer.renderMap(g, map, screen.getWidth(), screen.getHeight());
+        Renderer.renderWinningGame(g, screen.getWidth(), screen.getHeight(),collectedStars);
     }
 
     public void drawGameOverMenu(Graphics2D g) {
@@ -318,8 +333,11 @@ public class GameEngine extends GameCore {
                 && home.x + home.getWidth() >= player.x
                 && player.y + player.getHeight() >= home.y
                 && home.y + home.getHeight() >= player.y) {
-            ResourceManager.currentMap++;
+            if(currentMap<MAP_COUNT)
+                currentMap++;
+            else state=GameState.WiningGame;
             map = ResourceManager.LoadMap();
+
         }
         return false;
     }

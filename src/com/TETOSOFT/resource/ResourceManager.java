@@ -15,6 +15,7 @@ public class ResourceManager {
 	public static GraphicsConfiguration gc;
 	public static Image[] tiles;
 	public static int tileImagesCount = 9;
+	public static int WIN=0;
 
 	public static Image LoadImage(String name){
 		String filename = "images/" + name;

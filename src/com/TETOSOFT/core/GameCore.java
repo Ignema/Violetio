@@ -16,7 +16,7 @@ public abstract class GameCore {
 		GAME_RUNNING,
 		PLAYER_DYING,
 		GAME_OVER,
-		OPTION_MENU
+		WiningGame, OPTION_MENU
 	};
 	protected static final int FONT_SIZE = 18;
 
@@ -173,6 +173,13 @@ public abstract class GameCore {
 					g.dispose();
 					screen.update();
 				}break;
+				case WiningGame:{
+					Graphics2D g = screen.getGraphics();
+					checkMainMenuInput();
+					drawWinningGame(g);
+					g.dispose();
+					screen.update();
+				}break;
 			}
 
 			// don't take a nap! run as fast as possible
@@ -182,6 +189,7 @@ public abstract class GameCore {
 		}
 	}
 
+	protected abstract void drawWinningGame(Graphics2D g);
 
 
 	/**

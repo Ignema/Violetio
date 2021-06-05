@@ -190,4 +190,19 @@ public class Renderer {
         g.drawString("Home: " + ResourceManager.currentMap, 700.0f, 20.0f);
         g.drawString("frames: " + frameCount, 500.f, 40.f);
     }
+
+    public static void renderWinningGame(Graphics2D g, int screenWidth, int screenHeight, int score) {
+        int alfa = 200;
+        Color customColor = new Color(0, 0, 0, alfa);
+        g.setColor(customColor);
+        g.fillRect(0, 0, screenWidth, screenHeight);
+        g.setColor(Color.RED);
+        g.drawString(String.format("Yayyyy You win, Your score is :  %d", score), screenWidth / 2 - 200, screenHeight / 2 -200);
+
+        Font font0 = new Font("arial", Font.PLAIN, 25);
+        Rectangle BackBtn = new Rectangle(screenWidth / 2 -150, screenHeight / 2 -70, 300, 50);
+        stringDrawer.drawCenteredString(g, "Main Menu (Press ESC)", BackBtn, font0,Color.RED);
+        Rectangle exitBtn = new Rectangle(screenWidth / 2 -125, screenHeight / 2 +10, 250, 50);
+        stringDrawer.drawCenteredString(g, "Exit (Press Q)", exitBtn, font0,Color.RED);
+    }
 }
