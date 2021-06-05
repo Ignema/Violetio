@@ -13,8 +13,7 @@ public class ScreenManager {
 	private int screenHeight;
 	private int targetWidth;
 	private int targetHeight;
-	private float scaleWidth;
-	private float scaleHeight;
+	private float scale;
 
 	Window fullScreenWindow;
 	BufferedImage buffer;
@@ -74,12 +73,14 @@ public class ScreenManager {
 			frame.setSize(screenWidth, screenHeight);
 			targetWidth = displayMode.getWidth();
 			targetHeight = displayMode.getHeight();
-			scaleHeight = (float) screenHeight / targetHeight;
-			scaleWidth = (float) screenWidth / targetWidth;
-			if (scaleHeight < scaleWidth) scaleWidth = scaleHeight;
-			else scaleHeight = scaleWidth;
+			scale = (float) screenHeight / targetHeight;
+			scale = Math.min(scale, (float) screenWidth / targetWidth);
+			//float screenScale = Toolkit.getDefaultToolkit().getScreenResolution() / 96.0f;
+			//Undo screen scaling
+			//scale /= screenScale;
 
-			buffer = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+			GraphicsConfiguration gc = device.getDefaultConfiguration();
+			buffer = gc.createCompatibleImage(targetWidth, targetHeight);
 		}
 
 		try {
@@ -90,20 +91,13 @@ public class ScreenManager {
 	}
 
 	public Graphics2D getGraphics() {
-		if (buffer != null) {
-			Graphics2D g = (Graphics2D) buffer.getGraphics();
-			g.clearRect(0, 0, targetWidth, targetHeight);
-			return g;
-		}
-		return null;
-		//return (strategy != null) ? (Graphics2D) strategy.getDrawGraphics() : null;
+		return (buffer != null) ? (Graphics2D) buffer.getGraphics() : null;
 	}
 
 	public void update() {
 		Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-		int finalWidth = (int)(targetWidth * scaleWidth);
-		int finalHeight = (int)(targetHeight * scaleHeight);
-		g.clearRect(0,0,screenWidth,screenHeight);
+		int finalWidth = (int)(targetWidth * scale);
+		int finalHeight = (int)(targetHeight * scale);
 		g.drawImage(buffer,(screenWidth - finalWidth)/2, (screenHeight - finalHeight) / 2, finalWidth, finalHeight, null);
 		g.dispose();
 		if (!strategy.contentsLost()) {
