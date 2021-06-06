@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="projet-agile-super-mario" />
+        <module name="agiledev" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="agiledev" target="1.8" />
       <module name="projet-agile-super-mario" target="1.8" />
     </bytecodeTargetLevel>
   </component>

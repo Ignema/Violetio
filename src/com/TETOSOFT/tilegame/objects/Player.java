@@ -89,6 +89,7 @@ public class Player {
 
 	public Player(){
 		PlayerAnimation.currentFrames = PlayerAnimation.idleRightFrames;
+		PlayerAnimation.currentFrameIndex = 0;
 		weakSpotWidth = getWidth();
 		weakSpotHeight = 8 * getHeight() / 10 ;
 	}

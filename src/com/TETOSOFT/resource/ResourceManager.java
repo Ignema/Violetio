@@ -57,8 +57,8 @@ public class ResourceManager {
 		int playerDyingFrameCount = 13;
 		int playerMovingFrameCount = 14;
 		//NOTE: player will have fixed size
-		Player.width = 40;
-		Player.height = 80;
+		Player.width = 35;
+		Player.height = 70;
 		Player.PlayerAnimation.idleLeftFrames = new Image[playerIdleFrameCount];
 		Player.PlayerAnimation.idleRightFrames = new Image[playerIdleFrameCount];
 		Player.PlayerAnimation.dyingLeftFrames = new Image[playerDyingFrameCount];
@@ -171,9 +171,17 @@ public class ResourceManager {
 
 			PowerUp.PowerUpAnimation.coinFrames[coin] = newImage;
 		}
+		int homeWidth = 100;
+		int homeHeight = 100;
+		String fileName = "images/heart.png";
+		Image home = new ImageIcon(fileName).getImage();
+		Image newImage = gc.createCompatibleImage(homeWidth, homeHeight,Transparency.BITMASK);
+		Graphics2D g = (Graphics2D) newImage.getGraphics();
+		g.drawImage(home, 0,0, homeWidth,homeHeight, null);
+		g.dispose();
 		//load home image
 		PowerUp.PowerUpAnimation.homeFrames = new Image[] {
-			LoadImage("heart.png"),
+			newImage
 		};
 		//load tiles images
 		tiles = new Image[tileImagesCount];
@@ -239,6 +247,7 @@ public class ResourceManager {
 				}
 			}
 		}
+
 		return newMap;
 	}
 }
