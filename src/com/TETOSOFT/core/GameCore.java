@@ -63,8 +63,8 @@ public abstract class GameCore {
 	/**
 	 * Exits the VM from a daemon thread. The daemon thread waits 2 seconds then
 	 * calls System.exit(0). Since the VM should exit when only daemon threads are
-	 * running, this makes sure System.exit(0) is only called if neccesary. It's
-	 * neccesary if the Java Sound system is running.
+	 * running, this makes sure System.exit(0) is only called if necessary. It's
+	 * necessary if the Java Sound system is running.
 	 */
 	public void lazilyExit() {
 		Thread thread = new Thread() {
@@ -72,7 +72,7 @@ public abstract class GameCore {
 				// first, wait for the VM exit on its own.
 				try {
 					Thread.sleep(2000);
-				} catch (InterruptedException ex) {
+				} catch(InterruptedException ex) {
 				}
 				// system is still running, so force an exit
 				System.exit(0);

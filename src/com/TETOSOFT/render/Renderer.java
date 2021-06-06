@@ -37,7 +37,7 @@ public class Renderer {
      */
     public static int tilesToPixels(int numTiles) {
         // no real reason to use shifting here.
-        // it's slighty faster, but doesn't add up to much
+        // it's slightly faster, but doesn't add up to much
         // on modern processors.
         return numTiles << TILE_SIZE_BITS;
         // use this if the tile size isn't a power of 2:
@@ -99,7 +99,7 @@ public class Renderer {
         int mapHeight = map.getHeight();
         int mapWorldWidth = tilesToPixels(mapWidth);
         int mapWorldHeight = tilesToPixels(mapHeight);
-        //NOTE(Mouad): player should be always in the middle of the screen if there is a room for it
+        // NOTE(Mouad): player should be always in the middle of the screen if there is a room for it
         // NOTE(Mouad): screenWorldPosition is the position of the screen in the game world
         int screenWorldPositionX = Math.round(player.x) - (screenWidth / 2);
         int screenWorldPositionY = Math.round(player.y) - (screenHeight / 2);
