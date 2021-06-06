@@ -15,6 +15,7 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>com.TETOSOFT.tilegame.GameEngine</mainClass>
                         </manifest>
                     </archive>
@@ -31,14 +32,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M4</version>
-                <configuration>
-                    <releaseProfiles>release</releaseProfiles>
-                </configuration>
             </plugin>
         </plugins>
     </build>
