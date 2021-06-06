@@ -34,13 +34,20 @@ In this project, we were given a sample source code about a mario game developed
 <img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/animation.png" />
 </p>
 
+<p align="center">
+<img src="https://i.imgur.com/HyJs7qw.gif" width="150" height="auto"/>
+<img src="https://i.imgur.com/rQB4SJ3.gif" width="150" height="auto"/>
+<img src="https://i.imgur.com/axB7O0M.gif" width="150" height="auto"/>
+<img src="https://i.imgur.com/r796y8K.gif" width="150" height="auto"/>
+</p>
+
 #### Enemies
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-01.png" width="200" height="200" />
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-02.png" width="200" height="200" />
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-03.png" width="200" height="200" />
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-04.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-01.png" width="200" height="auto" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-02.png" width="200" height="auto" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-03.png" width="200" height="auto" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/enemy-04.png" width="200" height="auto" />
 </p>
 
 #### Backgrounds
@@ -84,7 +91,7 @@ Clone the repo
 
     git clone https://github.com/anassBenhima/projet-agile-super-mario.git
 
-Execute **main** located in *src\main\java\com\TETOSOFT\tilegame\GameEngine.java* with an IDE
+Execute **main** located in *src\com\TETOSOFT\tilegame\GameEngine.java* with an IDE
 
 ### With Maven
 
