@@ -1,11 +1,9 @@
-# My Super Mario Java 2D Game
+# Violetio: Agile Development Project
 
-This is a full screen 2D Java game like super mario with some basic creatures and maps.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/logo.png" width="200" height="200" />
+</p>
 
-This game is implemented using the Java programming language, using the java graphics librieries.
+# Description
 
-The used IDE is netbeans (I uploaded all project artifacts), also the game JAR file is uploaded.
-
-This game is free to use and the code is available to anyone to learn from it without any restrictions.
-
-Please visit my website. http://www.mohamedtalaat.net/
+In this project, we were given a sample source code about a mario game developed in java. The objective was to improve this game and work on it through agile sprints to produce a better version.
