@@ -25,13 +25,13 @@ In this project, we were given a sample source code about a mario game developed
 #### Main Player
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/player.png" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/player.png" width="300" height="auto"  />
 </p>
 
 #### Animation
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/animation.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/animation.png" />
 </p>
 
 #### Enemies
@@ -46,15 +46,15 @@ In this project, we were given a sample source code about a mario game developed
 #### Backgrounds
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-01.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-01.png" />
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-02.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-02.png" />
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-03.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/background-03.png" />
 </p>
 
 #### Other Assets
@@ -67,13 +67,13 @@ In this project, we were given a sample source code about a mario game developed
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-01.png" width="200" height="200" />
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-02.png" width="200" height="200" />
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-03.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-01.png" width="200" height="auto" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-02.png" width="200" height="auto" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/rock-03.png" width="200" height="auto" />
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/tree.png" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/anassBenhima/projet-agile-super-mario/main/readme/tree.png" />
 </p>
 
 ## Installation
