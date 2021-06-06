@@ -9,8 +9,8 @@ import javax.swing.*;
 public class ScreenManager {
 	private final GraphicsDevice device;
 	private BufferStrategy strategy;
-	private int screenWidth;
-	private int screenHeight;
+	private final int screenWidth;
+	private final int screenHeight;
 	private int targetWidth;
 	private int targetHeight;
 	private float scale;
